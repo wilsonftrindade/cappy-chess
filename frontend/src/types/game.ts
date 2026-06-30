@@ -1,5 +1,11 @@
 export type PlayerColor = "white" | "black";
 
+export type DisplayMove = {
+    move_number: number;
+    white: string | null;
+    black: string | null;
+};
+
 export type ParseGameRequest = {
   pgn: string;
 };

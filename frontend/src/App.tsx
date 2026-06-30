@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { parseGame } from './api/games'
-import type { ParsedGameResponse } from './types/game'
+import type { ParsedGameResponse, ParsedMove, DisplayMove } from './types/game'
 import './App.css'
+
+
 
 function App() {
   const [backendStatus, setBackendStatus] = useState("checking...")
@@ -35,6 +37,7 @@ function App() {
   const handleParseGame = async () => {
     setIsLoading(true);
     setError(null);
+    setParsedGame(null);
     
     try{
       const result = await parseGame(pgn);
@@ -47,6 +50,28 @@ function App() {
       setIsLoading(false);
     }
   };
+
+  function groupMoves(moves: ParsedMove[]): DisplayMove[] {
+    const displayMoves: DisplayMove[] = [];
+
+    for (let i = 0; i < moves.length; i += 2) {
+      const moveNumber = moves[i].move_number;
+      const whiteMove = moves[i].san;
+      const blackMove = (i + 1 < moves.length) ? moves[i + 1].san : null;
+
+      const displayMove = {
+        move_number: moveNumber,
+        white: whiteMove,
+        black: blackMove,
+      };
+
+      displayMoves.push(displayMove);
+    }
+
+    return displayMoves;
+  }
+
+  const displayMoves = parsedGame ? groupMoves(parsedGame.moves) : [];
 
   return (
     <main>
@@ -83,9 +108,9 @@ function App() {
 
           <h3>Moves</h3>
           <ol>
-            {parsedGame.moves.map((move, index) => (
+            {displayMoves.map((move, index) => (
               <li key={index}>
-                {move.move_number}. {move.color} {move.san} ({move.uci})
+                {move.move_number}. {move.white} {move.black ?? ""}
               </li>
             ))}
           </ol>
