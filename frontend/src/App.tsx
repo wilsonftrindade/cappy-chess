@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react'
 import { parseGame } from './api/games'
-import type { ParsedGameResponse, ParsedMove, DisplayMove } from './types/game'
+import { groupMoves } from './utils/moves'
+import type { ParsedGameResponse } from './types/game'
+import MoveList from './components/MoveList'
+import ReviewBoard from './components/ReviewBoard'
+import SelectedMovePanel from './components/SelectedMovePanel'
+import PgnInput from './components/PgnInput'
 import './App.css'
-import { Chessboard } from 'react-chessboard'
 
-const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+
+const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 function App() {
   const [backendStatus, setBackendStatus] = useState("checking...")
@@ -40,6 +45,7 @@ function App() {
     setIsLoading(true);
     setError(null);
     setParsedGame(null);
+    setSelectedMoveIndex(null);
     
     try{
       const result = await parseGame(pgn);
@@ -52,28 +58,6 @@ function App() {
       setIsLoading(false);
     }
   };
-
-  function groupMoves(moves: ParsedMove[]): DisplayMove[] {
-    const displayMoves: DisplayMove[] = [];
-
-    for (let i = 0; i < moves.length; i += 2) {
-      const moveNumber = moves[i].move_number;
-      const whiteMove = moves[i].san;
-      const blackMove = (i + 1 < moves.length) ? moves[i + 1].san : null;
-
-      const displayMove = {
-        move_number: moveNumber,
-        white: whiteMove,
-        black: blackMove,
-        whiteIndex: i,
-        blackIndex: (i + 1 < moves.length) ? i + 1 : null
-      };
-
-      displayMoves.push(displayMove);
-    }
-
-    return displayMoves;
-  }
 
   const displayMoves = parsedGame ? groupMoves(parsedGame.moves) : [];
 
@@ -117,90 +101,30 @@ function App() {
        <h1>AI Chess Coach</h1>
       <p>Backend status: {backendStatus}</p>
 
-      <section>
-        <h2>Paste PGN</h2>
-
-        <textarea
-          value={pgn}
-          onChange={(event) => setPgn(event.target.value)}
-          rows={10}
-          cols={80}
-          placeholder="Paste a PGN here..."
-        />
-
-        <br />
-
-        <button onClick={handleParseGame} disabled={isLoading || !pgn.trim()}>
-          {isLoading ? "Parsing..." : "Parse Game"}
-        </button>
-      </section>
+      <PgnInput pgn={pgn} onPgnChange={setPgn} onParseGame={handleParseGame} isLoading={isLoading} />
 
       {error && <p>{error}</p>}
 
-      {parsedGame && (
-        <section>
-          <h2>Parsed Game</h2>
-          <p>
-            {parsedGame.white ?? "Unknown"} vs{" "}
-            {parsedGame.black ?? "Unknown"} — {parsedGame.result ?? "*"}
-          </p>
+      {parsedGame ? (
+        <>
+            <ReviewBoard
+              boardOptions={chessboardOptions}
+              onPreviousMove={handlePreviousMove}
+              onNextMove={handleNextMove}
+              selectedMoveIndex={selectedMoveIndex}
+              parsedGame={parsedGame}
+            />
 
-          <section>
-            <h3>Chessboard</h3>
-            <div style={{ width: "600px", height: "600px"}}>
-              <Chessboard options={chessboardOptions} />
-            </div>
+            <MoveList moves={displayMoves} onSelectMove={setSelectedMoveIndex} />
 
-            <button onClick={handlePreviousMove} disabled={selectedMoveIndex == null}>
-              Previous
-            </button>
+            {selectedMove ? (
+              <SelectedMovePanel move={selectedMove} />
+            ) : null}
 
-            <button onClick={handleNextMove} disabled={selectedMoveIndex === parsedGame.moves.length - 1}>
-              Next
-            </button>
-          </section>
+        </>
 
-          <h3>Moves</h3>
-          <ol>
-            {displayMoves.map((move) => (
-              <li key={move.move_number}>
-                <span> {move.move_number}. </span>
+      ) : null}
 
-                <button onClick={() => setSelectedMoveIndex(move.whiteIndex)}>
-                  {move.white}
-                </button>
-
-                {move.black && move.blackIndex !== null ? (
-                  <button onClick={() => setSelectedMoveIndex(move.blackIndex)}>
-                    {move.black}
-                  </button>
-                ) : null}
-              </li>
-            ))}
-          </ol>
-
-          <ul>
-            {parsedGame.moves.map((move, index) => (
-              <li key={index} onClick={() => setSelectedMoveIndex(index)}>
-                {move.move_number}. {move.color} {move.san}
-              </li>
-            ))}
-          </ul>
-
-            {selectedMove && (
-              <section>
-                <h3>Selected Move</h3>
-                <p>
-                  {selectedMove.move_number}. {selectedMove.color} {selectedMove.san}
-                </p>
-                <p> UCI: {selectedMove.uci}</p>
-                <p>FEN before: {selectedMove.fen_before}</p>
-                <p>FEN after: {selectedMove.fen_after}</p>
-              </section>
-            )}
-
-        </section>
-      )}
     </main>
   );
 }
