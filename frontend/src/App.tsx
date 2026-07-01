@@ -4,7 +4,7 @@ import type { ParsedGameResponse, ParsedMove, DisplayMove } from './types/game'
 import './App.css'
 import { Chessboard } from 'react-chessboard'
 
-
+const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
 function App() {
   const [backendStatus, setBackendStatus] = useState("checking...")
@@ -77,7 +77,12 @@ function App() {
 
   const selectedMove = parsedGame && selectedMoveIndex !== null ? parsedGame.moves[selectedMoveIndex] : null;
   
-  const boardPosition = selectedMove ? selectedMove.fen_after : "start";
+  const boardPosition = selectedMove ? selectedMove.fen_after : STARTING_FEN;
+
+  const chessboardOptions = {
+    position: boardPosition,
+    allowDragging: false
+  }
 
   return (
     <main>
@@ -115,7 +120,7 @@ function App() {
           <section>
             <h3>Chessboard</h3>
             <div style={{ width: "600px", height: "600px"}}>
-              <Chessboard position={boardPosition} />
+              <Chessboard options={chessboardOptions} />
             </div>
           </section>
 
