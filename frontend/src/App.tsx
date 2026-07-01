@@ -84,6 +84,32 @@ function App() {
     allowDragging: false
   }
 
+  const handleNextMove = () => {
+    if (!parsedGame) return;
+
+    if (selectedMoveIndex === null) {
+      setSelectedMoveIndex(0);
+      return;
+    } 
+    
+    if (selectedMoveIndex < parsedGame.moves.length - 1) {
+      setSelectedMoveIndex(selectedMoveIndex + 1);
+    }
+  };
+
+  const handlePreviousMove = () => {
+    if (!parsedGame || selectedMoveIndex === null) return;
+
+    if (selectedMoveIndex === 0) {
+      setSelectedMoveIndex(null);
+      return;
+    }
+
+    if (selectedMoveIndex > 0) {
+      setSelectedMoveIndex(selectedMoveIndex - 1);
+    }
+  };
+
   return (
     <main>
        <h1>AI Chess Coach</h1>
@@ -122,6 +148,14 @@ function App() {
             <div style={{ width: "600px", height: "600px"}}>
               <Chessboard options={chessboardOptions} />
             </div>
+
+            <button onClick={handlePreviousMove} disabled={selectedMoveIndex == null}>
+              Previous
+            </button>
+
+            <button onClick={handleNextMove} disabled={selectedMoveIndex === parsedGame.moves.length - 1}>
+              Next
+            </button>
           </section>
 
           <h3>Moves</h3>
