@@ -97,34 +97,54 @@ function App() {
   };
 
   return (
-    <main>
-       <h1>AI Chess Coach</h1>
-      <p>Backend status: {backendStatus}</p>
+    <main className="app">
+      <header className="app-header">
+        <h1>AI Chess Coach</h1>
+        <p>Backend status: {backendStatus}</p>
+      </header>
 
-      <PgnInput pgn={pgn} onPgnChange={setPgn} onParseGame={handleParseGame} isLoading={isLoading} />
+      <div className="pgn-input-container"> 
+        <PgnInput 
+          pgn={pgn} 
+          onPgnChange={setPgn} 
+          onParseGame={handleParseGame} 
+          isLoading={isLoading} />
+      </div>
 
-      {error && <p>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
       {parsedGame ? (
-        <>
+        <section className="review-page">
+          <section className="review-main">
+            <div className="game-summary">
+              <h2>Parsed Game</h2>
+              <p>
+                  {parsedGame.white ?? "Unknown"} vs{" "}
+                  {parsedGame.black ?? "Unknown"} — {parsedGame.result ?? "*"}
+              </p>
+            </div>
+          
             <ReviewBoard
               boardOptions={chessboardOptions}
               onPreviousMove={handlePreviousMove}
               onNextMove={handleNextMove}
               selectedMoveIndex={selectedMoveIndex}
-              parsedGame={parsedGame}
+              totalMoves={parsedGame.moves.length}
             />
+            </section>
 
-            <MoveList moves={displayMoves} onSelectMove={setSelectedMoveIndex} />
+            <aside className="review-sidebar">
+              <MoveList
+                moves={displayMoves} 
+                onSelectMove={setSelectedMoveIndex} 
+              />
 
             {selectedMove ? (
               <SelectedMovePanel move={selectedMove} />
             ) : null}
-
-        </>
-
+            </aside>
+        </section>
       ) : null}
-
     </main>
   );
 }

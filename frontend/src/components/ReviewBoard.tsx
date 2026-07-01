@@ -1,28 +1,24 @@
 import { Chessboard } from 'react-chessboard'
 
-const ReviewBoard = ( { boardOptions, onPreviousMove, onNextMove, selectedMoveIndex, parsedGame } ) => {
+const ReviewBoard = ( { boardOptions, onPreviousMove, onNextMove, selectedMoveIndex, totalMoves } ) => {
     return (
-        <>
-            <h2>Parsed Game</h2>
-            
-            <p>
-                {parsedGame.white ?? "Unknown"} vs{" "}
-                {parsedGame.black ?? "Unknown"} — {parsedGame.result ?? "*"}
-            </p>
-
+        <section className="review-board">
             <h3>Chessboard</h3>
-            <div style={{ width: "600px", height: "600px"}}>
+
+            <div className="board-container">
                 <Chessboard options={boardOptions} />
             </div>
 
-            <button onClick={onPreviousMove} disabled={selectedMoveIndex == null}>
-              Previous
-            </button>
+            <div className="board-controls">
+                <button onClick={onPreviousMove} disabled={selectedMoveIndex == null}>
+                Previous
+                </button>
 
-            <button onClick={onNextMove} disabled={selectedMoveIndex === parsedGame.moves.length - 1}>
-              Next
-            </button>
-        </>
+                <button onClick={onNextMove} disabled={selectedMoveIndex === totalMoves - 1}>
+                Next
+                </button>
+            </div>
+        </section>
         
     );
 };

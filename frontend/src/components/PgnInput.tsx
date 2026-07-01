@@ -3,7 +3,7 @@ const PgnInput = ( {isLoading, onPgnChange, onParseGame, pgn} ) => {
         <>
         <h2>Paste PGN</h2>
 
-        <textarea
+        <textarea className="pgn-textarea"
           value={pgn}
           onChange={(event) => onPgnChange(event.target.value)}
           rows={10}
@@ -13,7 +13,7 @@ const PgnInput = ( {isLoading, onPgnChange, onParseGame, pgn} ) => {
 
         <br />
 
-        <button onClick={onParseGame} disabled={isLoading || !pgn.trim()}>
+        <button className="parse-button" onClick={onParseGame} disabled={isLoading || !pgn.trim()}>
           {isLoading ? "Parsing..." : "Parse Game"}
         </button>
         </>

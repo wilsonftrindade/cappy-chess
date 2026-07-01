@@ -1,25 +1,26 @@
 const MoveList = ({ moves, onSelectMove }) => {
     return (
-        <>
+        <section className="move-list-container">
             <h3>Moves</h3>
-            <ol>
+
+          <div className="move-list">
             {moves.map((move) => (
-              <li key={move.move_number}>
+              <div className="move-row" key={move.move_number}>
                 <span> {move.move_number}. </span>
 
-                <button onClick={() => onSelectMove(move.whiteIndex)}>
+                <button className="move-button" onClick={() => onSelectMove(move.whiteIndex)}>
                   {move.white}
                 </button>
 
                 {move.black && move.blackIndex !== null ? (
-                  <button onClick={() => onSelectMove(move.blackIndex)}>
+                  <button className="move-button" onClick={() => onSelectMove(move.blackIndex)}>
                     {move.black}
                   </button>
                 ) : null}
-              </li>
+              </div>
             ))}
-          </ol>
-        </>
+          </div>
+        </section>
     );
 };
 
