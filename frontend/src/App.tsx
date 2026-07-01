@@ -11,6 +11,7 @@ function App() {
   const [parsedGame, setParsedGame] = useState<ParsedGameResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedMoveIndex, setSelectedMoveIndex] = useState<number | null>(null);
 
   // Health check for the backend server
   useEffect(() => {
@@ -73,6 +74,8 @@ function App() {
 
   const displayMoves = parsedGame ? groupMoves(parsedGame.moves) : [];
 
+  const selectedMove = parsedGame && selectedMoveIndex !== null ? parsedGame.moves[selectedMoveIndex] : null;
+
   return (
     <main>
        <h1>AI Chess Coach</h1>
@@ -107,13 +110,34 @@ function App() {
           </p>
 
           <h3>Moves</h3>
-          <ol>
+          {/* <ol>
             {displayMoves.map((move, index) => (
               <li key={index}>
                 {move.move_number}. {move.white} {move.black ?? ""}
               </li>
             ))}
-          </ol>
+          </ol> */}
+
+          <ul>
+            {parsedGame.moves.map((move, index) => (
+              <li key={index} onClick={() => setSelectedMoveIndex(index)}>
+                {move.move_number}. {move.color} {move.san}
+              </li>
+            ))}
+          </ul>
+
+            {selectedMove && (
+              <section>
+                <h3>Selected Move</h3>
+                <p>
+                  {selectedMove.move_number}. {selectedMove.color} {selectedMove.san}
+                </p>
+                <p> UCI: {selectedMove.uci}</p>
+                <p>FEN before: {selectedMove.fen_before}</p>
+                <p>FEN after: {selectedMove.fen_after}</p>
+              </section>
+            )}
+
         </section>
       )}
     </main>
