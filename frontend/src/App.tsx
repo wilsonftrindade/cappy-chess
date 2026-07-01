@@ -65,6 +65,8 @@ function App() {
         move_number: moveNumber,
         white: whiteMove,
         black: blackMove,
+        whiteIndex: i,
+        blackIndex: (i + 1 < moves.length) ? i + 1 : null
       };
 
       displayMoves.push(displayMove);
@@ -159,13 +161,23 @@ function App() {
           </section>
 
           <h3>Moves</h3>
-          {/* <ol>
-            {displayMoves.map((move, index) => (
-              <li key={index}>
-                {move.move_number}. {move.white} {move.black ?? ""}
+          <ol>
+            {displayMoves.map((move) => (
+              <li key={move.move_number}>
+                <span> {move.move_number}. </span>
+
+                <button onClick={() => setSelectedMoveIndex(move.whiteIndex)}>
+                  {move.white}
+                </button>
+
+                {move.black && move.blackIndex !== null ? (
+                  <button onClick={() => setSelectedMoveIndex(move.blackIndex)}>
+                    {move.black}
+                  </button>
+                ) : null}
               </li>
             ))}
-          </ol> */}
+          </ol>
 
           <ul>
             {parsedGame.moves.map((move, index) => (
