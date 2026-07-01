@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { parseGame } from './api/games'
 import type { ParsedGameResponse, ParsedMove, DisplayMove } from './types/game'
 import './App.css'
+import { Chessboard } from 'react-chessboard'
 
 
 
@@ -75,6 +76,8 @@ function App() {
   const displayMoves = parsedGame ? groupMoves(parsedGame.moves) : [];
 
   const selectedMove = parsedGame && selectedMoveIndex !== null ? parsedGame.moves[selectedMoveIndex] : null;
+  
+  const boardPosition = selectedMove ? selectedMove.fen_after : "start";
 
   return (
     <main>
@@ -108,6 +111,13 @@ function App() {
             {parsedGame.white ?? "Unknown"} vs{" "}
             {parsedGame.black ?? "Unknown"} — {parsedGame.result ?? "*"}
           </p>
+
+          <section>
+            <h3>Chessboard</h3>
+            <div style={{ width: "600px", height: "600px"}}>
+              <Chessboard position={boardPosition} />
+            </div>
+          </section>
 
           <h3>Moves</h3>
           {/* <ol>
