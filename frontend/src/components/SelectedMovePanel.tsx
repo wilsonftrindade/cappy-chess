@@ -2,12 +2,22 @@ const SelectedMovePanel = ( { move} ) => {
     return (
         <section className="selected-move-panel">
          <h3>Selected Move</h3>
+            <div className="selected-move-summary">
                 <p>
                   {move.move_number}. {move.color} {move.san}
                 </p>
                 <p> UCI: {move.uci}</p>
-                <p>FEN before: {move.fen_before}</p>
-                <p>FEN after: {move.fen_after}</p>
+            </div>   
+        
+            <div className="fen-block">
+                <span className="fen-label">FEN before</span>
+                <code>{move.fen_before}</code>
+            </div>
+
+            <div className="fen-block">
+                <span className="fen-label">FEN after</span>
+                <code>{move.fen_after}</code>
+            </div>
 
         </section>
     );

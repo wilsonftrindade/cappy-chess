@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { parseGame } from './api/games'
+import { analyzeFen } from './api/analysis'
 import { groupMoves } from './utils/moves'
 import type { ParsedGameResponse } from './types/game'
+import type { AnalysisResponse } from './types/analysis'
 import MoveList from './components/MoveList'
 import ReviewBoard from './components/ReviewBoard'
 import SelectedMovePanel from './components/SelectedMovePanel'
 import PgnInput from './components/PgnInput'
+import AnalysisPanel from './components/AnalysisPanel'
 import './App.css'
 
 
@@ -18,6 +21,9 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedMoveIndex, setSelectedMoveIndex] = useState<number | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<null | AnalysisResponse>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   // Health check for the backend server
   useEffect(() => {
@@ -47,7 +53,7 @@ function App() {
     setParsedGame(null);
     setSelectedMoveIndex(null);
     
-    try{
+    try {
       const result = await parseGame(pgn);
       setParsedGame(result);
     }
@@ -58,6 +64,30 @@ function App() {
       setIsLoading(false);
     }
   };
+
+  const handleAnalyzeMove = async () => {
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+    setAnalysisError(null);
+
+    if (!parsedGame || selectedMoveIndex === null) {
+      setAnalysisError("No move selected for analysis");
+      setIsAnalyzing(false);
+      return;
+    }
+
+    try {
+      const selectedMove = parsedGame.moves[selectedMoveIndex];
+      const result = await analyzeFen(selectedMove.fen_before, 10);
+      setAnalysisResult(result);
+    } 
+    catch (error) {
+      setAnalysisError("Failed to analyze move");
+    }
+    finally {
+      setIsAnalyzing(false);
+    }
+  }
 
   const displayMoves = parsedGame ? groupMoves(parsedGame.moves) : [];
 
@@ -71,6 +101,9 @@ function App() {
   }
 
   const handleNextMove = () => {
+    setAnalysisResult(null);
+    setAnalysisError(null);
+
     if (!parsedGame) return;
 
     if (selectedMoveIndex === null) {
@@ -84,6 +117,9 @@ function App() {
   };
 
   const handlePreviousMove = () => {
+    setAnalysisResult(null);
+    setAnalysisError(null);
+
     if (!parsedGame || selectedMoveIndex === null) return;
 
     if (selectedMoveIndex === 0) {
@@ -94,6 +130,12 @@ function App() {
     if (selectedMoveIndex > 0) {
       setSelectedMoveIndex(selectedMoveIndex - 1);
     }
+  };
+
+  const handleSelectMove = (index: number) => {
+    setSelectedMoveIndex(index);
+    setAnalysisResult(null);
+    setAnalysisError(null);
   };
 
   return (
@@ -136,12 +178,22 @@ function App() {
             <aside className="review-sidebar">
               <MoveList
                 moves={displayMoves} 
-                onSelectMove={setSelectedMoveIndex} 
+                onSelectMove={handleSelectMove} 
               />
 
             {selectedMove ? (
-              <SelectedMovePanel move={selectedMove} />
+              <div className="selected-move-panel-container">
+                <SelectedMovePanel move={selectedMove} />
+                
+                <AnalysisPanel 
+                  analysis={analysisResult} 
+                  isAnalyzing={isAnalyzing} 
+                  analysisError={analysisError} 
+                  onAnalyzeMove={handleAnalyzeMove}
+                />
+              </div>
             ) : null}
+
             </aside>
         </section>
       ) : null}

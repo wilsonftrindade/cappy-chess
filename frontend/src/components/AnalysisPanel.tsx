@@ -18,40 +18,41 @@ function formatEvaluation(evaluation: number | null, mate_in: number | null): st
 };
 
 const AnalysisPanel = ({ analysis, isAnalyzing, analysisError, onAnalyzeMove  }) => {
-    return (<section className="analysis-panel">
-        <h3> Engine Analysis</h3>
+    return (
+        <section className="analysis-panel">
+            <h3> Engine Analysis</h3>
 
-        <button onClick={onAnalyzeMove} disabled={isAnalyzing}>
-            {isAnalyzing ? "Analyzing..." : "Analyze Move"}
-        </button>
+            <button onClick={onAnalyzeMove} disabled={isAnalyzing}>
+                {isAnalyzing ? "Analyzing..." : "Analyze Move"}
+            </button>
 
-        {analysisError ? (
-            <p className="error-message">{analysisError}</p>
-        ) : null}
+            {analysisError ? (
+                <p className="error-message">{analysisError}</p>
+            ) : null}
 
-        {analysis ? (
-            <div className="analysis-results">
-                <p>
-                    <strong>Best Move: </strong> {analysis.best_move_san}
-                </p>
+            {analysis ? (
+                <div className="analysis-results">
+                    <p>
+                        <strong>Best Move: </strong> {analysis.best_move_san}
+                    </p>
 
-                <p>
-                    <strong> Evaluation: </strong> {formatEvaluation(analysis.evaluation_cp, analysis.mate_in)}
-                </p>
+                    <p>
+                        <strong> Evaluation: </strong> {formatEvaluation(analysis.evaluation_cp, analysis.mate_in)}
+                    </p>
 
-                <p>
-                    <strong> Best Move UCI: </strong> {analysis.best_move_uci}
-                </p>
+                    <p>
+                        <strong> Best Move UCI: </strong> {analysis.best_move_uci}
+                    </p>
 
-                <p>
-                    <strong>Line:</strong>{" "}
-                    {analysis.main_variation.length > 0
-                    ? analysis.main_variation.join(" ")
-                    : "No line available"}
-                </p>
-            </div>
-        ) : null}
-    </section>)
+                    <p>
+                        <strong>Line:</strong>{" "}
+                        {analysis.main_variation.length > 0
+                        ? analysis.main_variation.join(" ")
+                        : "No line available"}
+                    </p>
+                </div>
+            ) : null}
+        </section>)
 };
 
 export default AnalysisPanel;
