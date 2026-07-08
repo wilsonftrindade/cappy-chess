@@ -1,3 +1,10 @@
+type AnalysisPanelProps = {
+    analysis: AnalysisResponse | null;
+    isAnalyzing: boolean;
+    analysisError: string | null;
+    onAnalyzeMove: () => void;
+};
+
 function formatEvaluation(evaluation: number | null, mate_in: number | null): string {
 
     if (mate_in !== null) {
@@ -17,7 +24,7 @@ function formatEvaluation(evaluation: number | null, mate_in: number | null): st
     return `${eval_score.toFixed(2)}`;
 };
 
-const AnalysisPanel = ({ analysis, isAnalyzing, analysisError, onAnalyzeMove  }) => {
+const AnalysisPanel = ( { analysis, isAnalyzing, analysisError, onAnalyzeMove  }: AnalysisPanelProps ) => {
     return (
         <section className="analysis-panel">
             <h3> Engine Analysis</h3>

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
 import { parseGame } from './api/games'
-import { analyzeFen } from './api/analysis'
+import { analyzeFen, reviewMove } from './api/analysis'
 import { groupMoves } from './utils/moves'
 import type { ParsedGameResponse } from './types/game'
-import type { AnalysisResponse } from './types/analysis'
+import type { AnalysisResponse, MoveReviewResponse } from './types/analysis'
 import MoveList from './components/MoveList'
 import ReviewBoard from './components/ReviewBoard'
 import SelectedMovePanel from './components/SelectedMovePanel'
 import PgnInput from './components/PgnInput'
 import AnalysisPanel from './components/AnalysisPanel'
+import MoveReviewPanel from './components/MoveReviewPanel'
 import './App.css'
 
 
@@ -24,6 +25,10 @@ function App() {
   const [analysisResult, setAnalysisResult] = useState<null | AnalysisResponse>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [moveReviewResult, setMoveReviewResult] = useState<MoveReviewResponse | null>(null);
+  const [isReviewingMove, setIsReviewingMove] = useState(false);
+  const [moveReviewError, setMoveReviewError] = useState<string | null>(null)
+
 
   // Health check for the backend server
   useEffect(() => {
@@ -89,12 +94,34 @@ function App() {
     }
   }
 
+  const handleReviewMove = async () => {
+    setIsReviewingMove(true);
+    setMoveReviewResult(null);
+    setMoveReviewError(null);
+
+    if (!parsedGame || selectedMoveIndex === null) {
+      setAnalysisError("No move selected for analysis");
+      setIsAnalyzing(false);
+      return;
+    }
+
+    try {
+      const selectedMove = parsedGame.moves[selectedMoveIndex]
+      const moveUci = selectedMove.uci
+      const result = await reviewMove(selectedMove.fen_before, moveUci, 10)
+      setMoveReviewResult(result)
+    }
+    catch (error) {
+      setMoveReviewError("Failed to review move")
+    }
+    finally {
+      setIsReviewingMove(false) 
+    }
+  }
+
   const displayMoves = parsedGame ? groupMoves(parsedGame.moves) : [];
-
   const selectedMove = parsedGame && selectedMoveIndex !== null ? parsedGame.moves[selectedMoveIndex] : null;
-  
   const boardPosition = selectedMove ? selectedMove.fen_after : STARTING_FEN;
-
   const chessboardOptions = {
     position: boardPosition,
     allowDragging: false
@@ -103,6 +130,9 @@ function App() {
   const handleNextMove = () => {
     setAnalysisResult(null);
     setAnalysisError(null);
+    setMoveReviewResult(null);
+    setMoveReviewError(null);
+
 
     if (!parsedGame) return;
 
@@ -119,6 +149,9 @@ function App() {
   const handlePreviousMove = () => {
     setAnalysisResult(null);
     setAnalysisError(null);
+    setMoveReviewResult(null);
+    setMoveReviewError(null);
+
 
     if (!parsedGame || selectedMoveIndex === null) return;
 
@@ -136,6 +169,8 @@ function App() {
     setSelectedMoveIndex(index);
     setAnalysisResult(null);
     setAnalysisError(null);
+    setMoveReviewResult(null);
+    setMoveReviewError(null);
   };
 
   return (
@@ -191,6 +226,14 @@ function App() {
                   analysisError={analysisError} 
                   onAnalyzeMove={handleAnalyzeMove}
                 />
+
+                <MoveReviewPanel
+                  review={moveReviewResult}
+                  isReviewing={isReviewingMove}
+                  reviewError={moveReviewError}
+                  onReviewMove={handleReviewMove}
+                />
+
               </div>
             ) : null}
 

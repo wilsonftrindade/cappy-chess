@@ -1,4 +1,11 @@
-const PgnInput = ( {isLoading, onPgnChange, onParseGame, pgn} ) => {
+type PgnInputProps = {
+    isLoading: boolean;
+    onPgnChange: (value: string) => void;
+    onParseGame: () => void;
+    pgn: string
+};
+
+const PgnInput = ( { isLoading, onPgnChange, onParseGame, pgn }: PgnInputProps) => {
     return (
         <>
         <h2>Paste PGN</h2>

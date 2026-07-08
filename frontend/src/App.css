@@ -267,3 +267,57 @@ button {
 .analysis-result p {
   margin: 8px 0;
 }
+
+.move-review-panel {
+  margin-top: 16px;
+  background: white;
+  border: 1px solid #ddd8cf;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.move-review-panel h3 {
+  margin: 0 0 12px;
+}
+
+.review-move-button {
+  padding: 8px 12px;
+  border: 1px solid #222;
+  border-radius: 8px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}
+
+.review-move-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.move-review-result {
+  margin-top: 12px;
+  background: #f6f4ef;
+  border: 1px solid #ddd8cf;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.move-review-result p {
+  margin: 8px 0;
+}
+
+.move-review-classification {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #222;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.move-review-error {
+  margin-top: 12px;
+  color: #b00020;
+}

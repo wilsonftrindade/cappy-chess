@@ -1,6 +1,14 @@
 import { Chessboard } from 'react-chessboard'
 
-const ReviewBoard = ( { boardOptions, onPreviousMove, onNextMove, selectedMoveIndex, totalMoves } ) => {
+type ReviewBoardProps = {
+    boardOptions: any;
+    onPreviousMove: () => void;
+    onNextMove: () => void;
+    selectedMoveIndex: number | null;
+    totalMoves: number;
+};
+
+const ReviewBoard = ( { boardOptions, onPreviousMove, onNextMove, selectedMoveIndex, totalMoves }: ReviewBoardProps ) => {
     return (
         <section className="review-board">
             <h3>Chessboard</h3>

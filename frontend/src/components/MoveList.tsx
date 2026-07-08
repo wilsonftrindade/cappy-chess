@@ -1,4 +1,10 @@
-const MoveList = ({ moves, onSelectMove }) => {
+import type { ParsedMove } from "../types/game";
+
+type MoveListProps = {
+    moves: ParsedMove[];
+    onSelectMove: (index: number) => void;}
+
+const MoveList = ( { moves, onSelectMove }: MoveListProps ) => {
     return (
         <section className="move-list-container">
             <h3>Moves</h3>

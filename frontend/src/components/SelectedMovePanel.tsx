@@ -1,4 +1,11 @@
-const SelectedMovePanel = ( { move} ) => {
+import type { ParsedMove } from "../types/game";
+
+type SelectedMovePanelProps = {
+    move: ParsedMove;
+};
+
+
+const SelectedMovePanel = ( { move }: SelectedMovePanelProps ) => {
     return (
         <section className="selected-move-panel">
          <h3>Selected Move</h3>

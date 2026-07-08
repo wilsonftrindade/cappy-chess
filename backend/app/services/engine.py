@@ -122,7 +122,6 @@ def classify_move(eval_cp_loss: int) -> str:
         return "Blunder"
 
 
-
         
 
     
