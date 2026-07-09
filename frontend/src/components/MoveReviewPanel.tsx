@@ -7,9 +7,13 @@ type MoveReviewPanelProps = {
   onReviewMove: () => void;
 };
 
-function formatCp(cp: number | null) {
-  if (cp === null) {
-    return "N/A";
+function formatCp(cp: number | null, mate_in: number | null) {
+  if(mate_in !== null) {
+    return `Mate in ${mate_in}`;
+  }
+  
+  if (cp === null){
+    return `N/A`
   }
 
   const pawns = cp / 100;
@@ -50,16 +54,15 @@ const MoveReviewPanel = ( { review, isReviewing, reviewError, onReviewMove }: Mo
           </p>
 
           <p>
-            <strong>Eval before:</strong> {formatCp(review.eval_cp_before)}
+            <strong>Eval before:</strong> {formatCp(review.eval_cp_before, review.mate_in_before)}
           </p>
 
           <p>
-            <strong>Eval after:</strong> {formatCp(review.eval_cp_after)}
+            <strong>Eval after:</strong> {formatCp(review.eval_cp_after, review.mate_in_after)}
           </p>
 
           <p>
-            <strong>Eval loss:</strong>{" "}
-            {review.eval_cp_loss !== null ? `${review.eval_cp_loss} cp` : "N/A"}
+            <strong>Eval loss:</strong>{" "} {formatCp(review.eval_cp_loss, null)}
           </p>
 
           <p>

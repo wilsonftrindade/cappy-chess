@@ -83,7 +83,7 @@ function App() {
 
     try {
       const selectedMove = parsedGame.moves[selectedMoveIndex];
-      const result = await analyzeFen(selectedMove.fen_before, 10);
+      const result = await analyzeFen(selectedMove.fen_before, 17);
       setAnalysisResult(result);
     } 
     catch (error) {

@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from app.schemas.analysis import AnalysisResponse, MoveReviewResponse
 import os, math
 from dotenv import load_dotenv
+from .classification import *
 
 load_dotenv()
 
@@ -57,7 +58,6 @@ def analyze_fen(fen: str, depth: int) -> AnalysisResponse:
 
 
 def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewResponse:
-    # Still need to handle mate scores
 
     try:
         board_before = chess.Board(fen_before)
@@ -66,6 +66,7 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
     
     analysis_before = analyze_fen(fen_before, depth)
     eval_cp_before = analysis_before.evaluation_cp
+    mate_in_before = analysis_before.mate_in
     best_move_uci = analysis_before.best_move_uci
     best_move_san = analysis_before.best_move_san
 
@@ -81,27 +82,22 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
     
     board_after.push(move)
 
+    move_san = board_before.san(move)
+
     fen_after = board_after.fen()
     analysis_after = analyze_fen(fen_after, depth)
     eval_cp_after = analysis_after.evaluation_cp
+    mate_in_after = analysis_after.mate_in
 
-    if board_before.turn == chess.WHITE:
-        eval_cp_loss = eval_cp_before - eval_cp_after
-    else:
-        eval_cp_loss = eval_cp_after - eval_cp_before
-
-    win_probability_before = color_win_probability(eval_cp_before, board_before.turn == chess.WHITE)
-    win_probability_after = color_win_probability(eval_cp_after, board_before.turn == chess.WHITE)
+    is_white = board_before.turn == chess.WHITE
     
-    win_probability_loss = win_probability_before - win_probability_after
+    eval_cp_loss = compute_eval_cp_loss(eval_cp_before, eval_cp_after, is_white)
+    win_probability_before = player_win_probability(eval_cp_before, mate_in_before, is_white)
+    win_probability_after = player_win_probability(eval_cp_after, mate_in_after, is_white)
+    win_probability_loss = compute_win_probability_loss(win_probability_before, win_probability_after)
 
-    if move_uci == best_move_uci:
-        classification = "Best"
-    else:
-        classification = classify_move(win_probability_loss)
-
-    move_san = board_before.san(move)
-
+    classification = classify_move(move_uci, best_move_uci, win_probability_loss, mate_in_before, mate_in_after, is_white)
+    
     return MoveReviewResponse(
         fen_before=fen_before,
         move_uci=move_uci,
@@ -111,6 +107,8 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
         eval_cp_before=eval_cp_before,
         eval_cp_after=eval_cp_after,
         eval_cp_loss=eval_cp_loss,
+        mate_in_before=mate_in_before,
+        mate_in_after=mate_in_after,
         win_probability_before=win_probability_before,
         win_probability_after=win_probability_after,
         win_probability_loss=win_probability_loss,
@@ -118,37 +116,7 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
     )
 
 
-def classify_move(win_percentage_loss: int) -> str:
 
-    win_percentage_loss = max(0, win_percentage_loss)
-    
-    if win_percentage_loss < 0.005:
-        return "Best"
-    elif win_percentage_loss < 0.02:
-        return "Excellent"
-    elif win_percentage_loss < 0.05:
-        return "Good"
-    elif win_percentage_loss < 0.10:
-        return "Inaccuracy"
-    elif win_percentage_loss < 0.20:
-        return "Mistake"
-    elif win_percentage_loss < 1:
-        return "Blunder"
 
-def cp_to_win_probability(cp: int) -> float:
-    # translate centipawns to white's win % (centipawns are in white's perspective)
-    win_percent = 50 + 50 * (2 / (1 + math.exp(-0.00368208 * cp)) - 1)
-    return win_percent / 100
-
-def color_win_probability(cp: int, is_white: bool):
-    if is_white:
-        return cp_to_win_probability(cp)
-    else:
-        return 1 - cp_to_win_probability(cp)
-    
-
-        
-
-    
 
 
