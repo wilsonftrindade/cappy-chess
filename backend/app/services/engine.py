@@ -2,7 +2,7 @@ import chess
 import chess.engine
 from fastapi import HTTPException
 from app.schemas.analysis import AnalysisResponse, MoveReviewResponse
-import os
+import os, math
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -90,7 +90,16 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
     else:
         eval_cp_loss = eval_cp_after - eval_cp_before
 
-    classification = classify_move(eval_cp_loss)
+    win_probability_before = color_win_probability(eval_cp_before, board_before.turn == chess.WHITE)
+    win_probability_after = color_win_probability(eval_cp_after, board_before.turn == chess.WHITE)
+    
+    win_probability_loss = win_probability_before - win_probability_after
+
+    if move_uci == best_move_uci:
+        classification = "Best"
+    else:
+        classification = classify_move(win_probability_loss)
+
     move_san = board_before.san(move)
 
     return MoveReviewResponse(
@@ -102,25 +111,41 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
         eval_cp_before=eval_cp_before,
         eval_cp_after=eval_cp_after,
         eval_cp_loss=eval_cp_loss,
+        win_probability_before=win_probability_before,
+        win_probability_after=win_probability_after,
+        win_probability_loss=win_probability_loss,
         classification=classification
     )
 
 
-def classify_move(eval_cp_loss: int) -> str:
+def classify_move(win_percentage_loss: int) -> str:
 
-    eval_cp_loss = max(0, eval_cp_loss)
+    win_percentage_loss = max(0, win_percentage_loss)
     
-    if eval_cp_loss < 20:
+    if win_percentage_loss < 0.005:
+        return "Best"
+    elif win_percentage_loss < 0.02:
         return "Excellent"
-    elif eval_cp_loss < 70:
+    elif win_percentage_loss < 0.05:
         return "Good"
-    elif eval_cp_loss < 150:
+    elif win_percentage_loss < 0.10:
         return "Inaccuracy"
-    elif eval_cp_loss < 300:
+    elif win_percentage_loss < 0.20:
         return "Mistake"
-    else:
+    elif win_percentage_loss < 1:
         return "Blunder"
 
+def cp_to_win_probability(cp: int) -> float:
+    # translate centipawns to white's win % (centipawns are in white's perspective)
+    win_percent = 50 + 50 * (2 / (1 + math.exp(-0.00368208 * cp)) - 1)
+    return win_percent / 100
+
+def color_win_probability(cp: int, is_white: bool):
+    if is_white:
+        return cp_to_win_probability(cp)
+    else:
+        return 1 - cp_to_win_probability(cp)
+    
 
         
 

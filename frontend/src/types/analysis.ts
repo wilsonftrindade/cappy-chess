@@ -28,5 +28,8 @@ export type MoveReviewResponse = {
     eval_cp_before: number | null;
     eval_cp_after: number | null;
     eval_cp_loss: number | null;
+    win_probability_before: number | null;
+    win_probability_after: number | null;
+    win_probability_loss: number | null;
     classification: string | null;
 }

@@ -63,6 +63,22 @@ const MoveReviewPanel = ( { review, isReviewing, reviewError, onReviewMove }: Mo
           </p>
 
           <p>
+            <strong>Win probability before: </strong> 
+            {review.win_probability_before !== null ? `${(review.win_probability_before * 100).toFixed(2)}%`: "N/A"}
+          </p>
+
+          <p>
+            <strong>Win probability after: </strong> 
+            {review.win_probability_after !== null ? `${(review.win_probability_after * 100).toFixed(2)}%`: "N/A"}
+          </p>
+
+          <p>
+            <strong>Win probability loss: </strong>{" "}
+            {review.win_probability_loss !== null ? `${(review.win_probability_loss * 100).toFixed(2)}%` : "N/A"}
+          </p>
+
+
+          <p>
             <strong>Classification:</strong>{" "}
             <span className="move-review-classification">
               {review.classification ?? "Unknown"}

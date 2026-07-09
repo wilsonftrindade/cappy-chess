@@ -26,4 +26,7 @@ class MoveReviewResponse(BaseModel):
     eval_cp_before: int | None
     eval_cp_after: int | None
     eval_cp_loss: int | None
+    win_probability_before: float | None
+    win_probability_after: float | None
+    win_probability_loss: float | None
     classification: str | None

@@ -108,7 +108,7 @@ function App() {
     try {
       const selectedMove = parsedGame.moves[selectedMoveIndex]
       const moveUci = selectedMove.uci
-      const result = await reviewMove(selectedMove.fen_before, moveUci, 10)
+      const result = await reviewMove(selectedMove.fen_before, moveUci, 17)
       setMoveReviewResult(result)
     }
     catch (error) {
