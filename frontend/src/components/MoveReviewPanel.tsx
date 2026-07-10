@@ -80,6 +80,10 @@ const MoveReviewPanel = ( { review, isReviewing, reviewError, onReviewMove }: Mo
             {review.win_probability_loss !== null ? `${(review.win_probability_loss * 100).toFixed(2)}%` : "N/A"}
           </p>
 
+          <p>
+            <strong>Move Accuracy:</strong>{" "}
+            {review.move_accuracy !== null ? `${(review.move_accuracy).toFixed(2)}%` : "N/A"}
+          </p>
 
           <p>
             <strong>Classification:</strong>{" "}

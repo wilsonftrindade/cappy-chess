@@ -8,7 +8,9 @@ from .classification import (
     compute_win_probability_loss,
     compute_eval_cp_loss,
     player_win_probability,
-    classify_move,)
+    classify_move,
+    compute_move_accuracy
+)
 
 load_dotenv()
 
@@ -101,6 +103,8 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
     win_probability_loss = compute_win_probability_loss(win_probability_before, win_probability_after)
 
     classification = classify_move(move_uci, best_move_uci, win_probability_loss, mate_in_before, mate_in_after, is_white)
+
+    move_accuracy = compute_move_accuracy(win_probability_loss)
     
     return MoveReviewResponse(
         fen_before=fen_before,
@@ -116,7 +120,8 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
         win_probability_before=win_probability_before,
         win_probability_after=win_probability_after,
         win_probability_loss=win_probability_loss,
-        classification=classification
+        classification=classification,
+        move_accuracy=move_accuracy
     )
 
 

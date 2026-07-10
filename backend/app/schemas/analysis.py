@@ -32,3 +32,4 @@ class MoveReviewResponse(BaseModel):
     win_probability_after: float | None
     win_probability_loss: float | None
     classification: str | None
+    move_accuracy: float | None

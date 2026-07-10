@@ -34,4 +34,5 @@ export type MoveReviewResponse = {
     win_probability_after: number | null;
     win_probability_loss: number | null;
     classification: string | null;
+    move_accuracy: number | null;
 }
