@@ -9,6 +9,7 @@ from app.services.classification import (
     classify_move_by_expected_points_loss,
     classify_mate_scenario,
     classify_move,
+    compute_move_accuracy
 )
 
 
@@ -227,3 +228,31 @@ def test_classify_move_falls_back_to_expected_points_loss():
     )
 
     assert result == "Blunder"
+
+def test_compute_move_accuracy_returns_none_if_loss_is_missing():
+    assert compute_move_accuracy(None) is None
+
+
+def test_compute_move_accuracy_returns_100_when_there_is_no_loss():
+    assert compute_move_accuracy(0.0) == 100.0
+
+
+@pytest.mark.parametrize(
+    ("win_probability_loss", "expected_accuracy"),
+    [
+        (0.005, 98.78),
+        (0.02, 92.40),
+        (0.05, 80.82),
+        (0.10, 64.58),
+        (0.20, 41.02),
+        (1.00, 0.00),
+    ],
+)
+def test_compute_move_accuracy_matches_reference_curve(
+    win_probability_loss: float,
+    expected_accuracy: float,
+):
+    assert compute_move_accuracy(win_probability_loss) == pytest.approx(
+        expected_accuracy,
+        abs=0.01,
+    )
