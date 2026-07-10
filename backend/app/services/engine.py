@@ -4,7 +4,11 @@ from fastapi import HTTPException
 from app.schemas.analysis import AnalysisResponse, MoveReviewResponse
 import os, math
 from dotenv import load_dotenv
-from .classification import *
+from .classification import (
+    compute_win_probability_loss,
+    compute_eval_cp_loss,
+    player_win_probability,
+    classify_move,)
 
 load_dotenv()
 

@@ -50,20 +50,20 @@ def player_win_probability(eval_cp: int | None, mate_in: int | None, is_white: b
     else:
         return 1 - cp_to_win_probability(eval_cp)
     
-def classify_move_by_expected_points_loss(win_percentage_loss: float, played_move_uci: str, best_move_uci: str | None) -> str:
+def classify_move_by_expected_points_loss(win_probability_loss: float, played_move_uci: str, best_move_uci: str | None) -> str:
 
     if best_move_uci is not None and played_move_uci == best_move_uci:
         return "Best"
     
-    if win_percentage_loss < 0.005:
+    if win_probability_loss < 0.005:
         return "Best"
-    elif win_percentage_loss < 0.02:
+    elif win_probability_loss < 0.02:
         return "Excellent"
-    elif win_percentage_loss < 0.05:
+    elif win_probability_loss < 0.05:
         return "Good"
-    elif win_percentage_loss < 0.10:
+    elif win_probability_loss < 0.10:
         return "Inaccuracy"
-    elif win_percentage_loss < 0.20:
+    elif win_probability_loss < 0.20:
         return "Mistake"
     else:
         return "Blunder"
