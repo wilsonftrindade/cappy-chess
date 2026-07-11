@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import Optional
+
 
 class AnalysisRequest(BaseModel):
     fen: str
@@ -33,3 +35,24 @@ class MoveReviewResponse(BaseModel):
     win_probability_loss: float | None
     classification: str | None
     move_accuracy: float | None
+
+class GameReviewRequest(BaseModel):
+    pgn: str
+    depth: int
+
+class ReviewedMove(MoveReviewResponse):
+    move_number: int
+    color: str
+    fen_after: str
+
+class GameReviewResponse(BaseModel):
+    white: str
+    black: str
+    result: str
+    white_elo: Optional[int]
+    black_elo: Optional[int]
+    reviewed_moves: list[ReviewedMove]
+
+
+
+

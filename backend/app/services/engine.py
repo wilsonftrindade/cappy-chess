@@ -2,7 +2,7 @@ import chess
 import chess.engine
 from fastapi import HTTPException
 from app.schemas.analysis import AnalysisResponse, MoveReviewResponse
-import os, math
+import os
 from dotenv import load_dotenv
 from .classification import (
     compute_win_probability_loss,
@@ -31,7 +31,6 @@ def analyze_fen(fen: str, depth: int) -> AnalysisResponse:
 def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewResponse:
 
     board_before = create_and_validate_board(fen_before)
-    analysis_before = analyze_fen(fen_before, depth)
 
     try:
         move = chess.Move.from_uci(move_uci)
@@ -46,15 +45,19 @@ def review_move(fen_before: str, move_uci: str, depth: int) -> MoveReviewRespons
     board_after.push(move)
 
     move_san = board_before.san(move)
-
-    fen_after = board_after.fen()
-    analysis_after = analyze_fen(fen_after, depth)
-  
     is_white = board_before.turn == chess.WHITE
-    
-    review = build_move_review(move_uci, move_san, analysis_before, analysis_after, is_white)
 
-    return review
+    engine = start_stockfish()
+
+    try: 
+        analysis_before = analyze_board(board_before, engine, depth)
+        analysis_after = analyze_board(board_after, engine, depth)
+
+        review = build_move_review(move_uci, move_san, analysis_before, analysis_after, is_white)
+
+        return review
+    finally:
+        engine.quit()
 
 
 def analyze_board(board: chess.Board, engine: chess.engine.SimpleEngine, depth: int) -> AnalysisResponse:
