@@ -1,6 +1,8 @@
-from app.schemas.analysis import GameReviewResponse, ReviewedMove
+from app.schemas.analysis import GameReviewResponse, ReviewedMove, PlayerReviewSummary
 from .pgn_parser import parse_pgn
 from .engine import start_stockfish, analyze_board, create_and_validate_board, build_move_review
+from .summary import build_player_summary
+
 
 def review_game(pgn: str, depth: int) -> GameReviewResponse:
     # 1. Parse the PGN.
@@ -57,6 +59,9 @@ def review_game(pgn: str, depth: int) -> GameReviewResponse:
             reviewed_moves.append(reviewed_move)
 
             analysis_before = analysis_after
+        
+        white_summary = build_player_summary(reviewed_moves, "white")
+        black_summary = build_player_summary(reviewed_moves, "black")
 
         return GameReviewResponse(
             white=parsed_game.white,
@@ -64,7 +69,9 @@ def review_game(pgn: str, depth: int) -> GameReviewResponse:
             result=parsed_game.result,
             white_elo=parsed_game.white_elo,
             black_elo=parsed_game.black_elo,
-            reviewed_moves=reviewed_moves
+            reviewed_moves=reviewed_moves,
+            white_summary=white_summary,
+            black_summary=black_summary
         )
     finally:
         engine.quit()

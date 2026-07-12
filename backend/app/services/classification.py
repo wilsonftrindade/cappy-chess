@@ -55,7 +55,7 @@ def classify_move_by_expected_points_loss(win_probability_loss: float, played_mo
     if best_move_uci is not None and played_move_uci == best_move_uci:
         return "Best"
     
-    if win_probability_loss < 0.005:
+    if win_probability_loss == 0:
         return "Best"
     elif win_probability_loss < 0.02:
         return "Excellent"
@@ -135,8 +135,6 @@ def compute_move_accuracy(win_probability_loss: float | None) -> float | None:
 
     move_accuracy = (103.1668100711649 * math.exp(-0.04354415386753951 * win_percent_loss) - 3.166924740191411) + 1
     return max(0, min(100, move_accuracy))
-    
-
     
     
      

@@ -45,6 +45,11 @@ class ReviewedMove(MoveReviewResponse):
     color: str
     fen_after: str
 
+class PlayerReviewSummary(BaseModel):
+    move_count: int
+    accuracy: float | None
+    classification_counts: dict[str, int]
+    
 class GameReviewResponse(BaseModel):
     white: str
     black: str
@@ -52,6 +57,13 @@ class GameReviewResponse(BaseModel):
     white_elo: Optional[int]
     black_elo: Optional[int]
     reviewed_moves: list[ReviewedMove]
+    white_summary: PlayerReviewSummary 
+    black_summary: PlayerReviewSummary 
+
+
+
+
+
 
 
 
