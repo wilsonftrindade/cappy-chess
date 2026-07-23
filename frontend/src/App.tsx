@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { parseGame } from './api/games'
-import { analyzeFen, reviewMove } from './api/analysis'
+import { analyzeFen, reviewMove, reviewGame } from './api/analysis'
 import { groupMoves } from './utils/moves'
 import type { ParsedGameResponse } from './types/game'
-import type { AnalysisResponse, MoveReviewResponse } from './types/analysis'
+import type { AnalysisResponse, MoveReviewResponse, GameReviewResponse } from './types/analysis'
 import MoveList from './components/MoveList'
 import ReviewBoard from './components/ReviewBoard'
 import SelectedMovePanel from './components/SelectedMovePanel'
@@ -17,6 +17,7 @@ const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 function App() {
   const [backendStatus, setBackendStatus] = useState("checking...")
+
   const [pgn, setPgn] = useState("")
   const [parsedGame, setParsedGame] = useState<ParsedGameResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -28,6 +29,7 @@ function App() {
   const [moveReviewResult, setMoveReviewResult] = useState<MoveReviewResponse | null>(null);
   const [isReviewingMove, setIsReviewingMove] = useState(false);
   const [moveReviewError, setMoveReviewError] = useState<string | null>(null)
+  const [gameReview, setGameReview] = useState<GameReviewResponse | null>(null)
 
 
   // Health check for the backend server
@@ -117,7 +119,25 @@ function App() {
     finally {
       setIsReviewingMove(false) 
     }
-  }
+  };
+
+  const handleReviewGame = async () => {
+    setGameReview(null);
+    setGameReview(null);
+    setSelectedMoveIndex(null);
+    setIsLoading(true);
+
+    try {
+      const result = await reviewGame(pgn, 17)
+      setGameReview(result)
+    }
+    catch (error) {
+      setError("Failed to review game")
+    }
+    finally {
+      setIsLoading(false) 
+    }
+  };
 
   const displayMoves = parsedGame ? groupMoves(parsedGame.moves) : [];
   const selectedMove = parsedGame && selectedMoveIndex !== null ? parsedGame.moves[selectedMoveIndex] : null;
@@ -184,13 +204,41 @@ function App() {
         <PgnInput 
           pgn={pgn} 
           onPgnChange={setPgn} 
-          onParseGame={handleParseGame} 
+          onAnalyzeGame={handleReviewGame} 
           isLoading={isLoading} />
       </div>
 
       {error && <p className="error-message">{error}</p>}
 
-      {parsedGame ? (
+      {gameReview ? (
+        <section className="game-summary">
+          <h2>Game Review Received</h2>
+
+          <p>
+            {gameReview.white} vs {gameReview.black}
+          </p>
+
+          <p>Result: {gameReview.result}</p>
+
+          <p>
+            White accuracy:{" "}
+            {gameReview.white_summary.accuracy !== null
+              ? `${gameReview.white_summary.accuracy.toFixed(2)}%`
+              : "N/A"}
+          </p>
+
+          <p>
+            Black accuracy:{" "}
+            {gameReview.black_summary.accuracy !== null
+              ? `${gameReview.black_summary.accuracy.toFixed(2)}%`
+              : "N/A"}
+          </p>
+
+          <p>Reviewed moves: {gameReview.reviewed_moves.length}</p>
+      </section>
+      ) : null}
+
+      {/* {parsedGame ? (
         <section className="review-page">
           <section className="review-main">
             <div className="game-summary">
@@ -239,7 +287,7 @@ function App() {
 
             </aside>
         </section>
-      ) : null}
+      ) : null} */}
     </main>
   );
 }

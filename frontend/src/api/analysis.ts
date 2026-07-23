@@ -1,4 +1,4 @@
-import type { AnalysisResponse, MoveReviewResponse } from "../types/analysis";
+import type { AnalysisResponse, MoveReviewResponse, GameReviewResponse } from "../types/analysis";
 
 const API_BASE_URL = "http://localhost:8000";
 
@@ -35,3 +35,21 @@ export async function reviewMove(fenBefore: string, moveUci: string, depth: numb
     const data = await response.json();
     return data;
 }
+
+export async function reviewGame(pgn: string, depth: number): Promise<GameReviewResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/analysis/game-review`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ pgn, depth })
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to review game');
+    }
+
+    const data = await response.json();
+    return data;
+}
+

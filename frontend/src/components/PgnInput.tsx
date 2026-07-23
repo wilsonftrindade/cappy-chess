@@ -1,11 +1,11 @@
 type PgnInputProps = {
     isLoading: boolean;
     onPgnChange: (value: string) => void;
-    onParseGame: () => void;
+    onAnalyzeGame: () => void;
     pgn: string
 };
 
-const PgnInput = ( { isLoading, onPgnChange, onParseGame, pgn }: PgnInputProps) => {
+const PgnInput = ( { isLoading, onPgnChange, onAnalyzeGame, pgn }: PgnInputProps) => {
     return (
         <>
         <h2>Paste PGN</h2>
@@ -20,8 +20,8 @@ const PgnInput = ( { isLoading, onPgnChange, onParseGame, pgn }: PgnInputProps) 
 
         <br />
 
-        <button className="parse-button" onClick={onParseGame} disabled={isLoading || !pgn.trim()}>
-          {isLoading ? "Parsing..." : "Parse Game"}
+        <button className="parse-button" onClick={onAnalyzeGame} disabled={isLoading || !pgn.trim()}>
+          {isLoading ? "Reviewing Game..." : "Review Game"}
         </button>
         </>
     );
