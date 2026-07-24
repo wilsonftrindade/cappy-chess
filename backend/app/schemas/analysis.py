@@ -54,8 +54,8 @@ class GameReviewResponse(BaseModel):
     white: str
     black: str
     result: str
-    white_elo: Optional[int]
-    black_elo: Optional[int]
+    white_elo: int | None
+    black_elo: int | None
     reviewed_moves: list[ReviewedMove]
     white_summary: PlayerReviewSummary 
     black_summary: PlayerReviewSummary 

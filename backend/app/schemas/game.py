@@ -17,5 +17,5 @@ class ParsedGameResponse(BaseModel):
     white: str
     black: str
     result: str
-    white_elo: Optional[int]
-    black_elo: Optional[int]
+    white_elo: int | None
+    black_elo: int | None

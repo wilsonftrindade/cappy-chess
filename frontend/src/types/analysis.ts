@@ -72,8 +72,8 @@ export type GameReviewResponse = {
     white: string
     black: string
     result: string
-    white_elo?: number
-    black_elo?: number
+    white_elo: number | null
+    black_elo: number | null
     reviewed_moves: ReviewedMove[]
     white_summary: PlayerReviewSummary 
     black_summary: PlayerReviewSummary 

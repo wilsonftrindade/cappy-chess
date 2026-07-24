@@ -2,7 +2,7 @@ export type PlayerColor = "white" | "black";
 
 export type DisplayMove = {
     move_number: number;
-    white: string;
+    white: string | null;
     black: string | null;
     whiteIndex: number;
     blackIndex: number | null;

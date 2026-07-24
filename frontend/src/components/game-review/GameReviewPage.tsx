@@ -1,0 +1,99 @@
+import { useState } from 'react'
+import type { GameReviewResponse } from "../../types/analysis";
+import BoardSection from "./BoardSection";
+import GameSummaryPanel from "./GameSummaryPanel"
+import ActiveReviewPanel from './ActiveReviewPanel';
+
+const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+type GameReviewProps = {
+    gameReview: GameReviewResponse;
+}
+
+type ReviewMode = "summary" | "reviewing"
+
+const GameReviewPage = ({ gameReview }: GameReviewProps) => {
+  const [selectedMoveIndex, setSelectedMoveIndex] = useState<number | null>(null);
+  const [reviewMode, setReviewMode] = useState<ReviewMode>("summary")
+
+  const handleStartReview = () => {
+    if (gameReview.reviewed_moves.length === 0) {
+      return;
+    }
+
+    setReviewMode("reviewing")
+    setSelectedMoveIndex(0)
+  }
+
+  const handleNextMove = () => {
+    if (selectedMoveIndex === null) {
+      setSelectedMoveIndex(0);
+      setReviewMode("reviewing");
+      return;
+    } 
+    
+    if (selectedMoveIndex < gameReview.reviewed_moves.length - 1) {
+      setSelectedMoveIndex(selectedMoveIndex + 1);
+    }
+
+    setReviewMode("reviewing");
+  };
+
+  const handlePreviousMove = () => {
+    if (selectedMoveIndex === null) return;
+
+    if (selectedMoveIndex === 0) {
+      setSelectedMoveIndex(null);
+    }
+
+    if (selectedMoveIndex > 0) {
+      setSelectedMoveIndex(selectedMoveIndex - 1);
+    }
+  };
+
+  const handleSelectMove = (index: number) => {
+    setSelectedMoveIndex(index);
+  };
+
+  const selectedMove = selectedMoveIndex !== null ? gameReview.reviewed_moves[selectedMoveIndex] : null;
+  const initialPosition = gameReview.reviewed_moves[0]?.fen_before ?? STARTING_FEN;
+  const boardPosition = selectedMove ? selectedMove.fen_after : initialPosition;
+
+  return (
+    <div className="game-review-page">
+      <div className="board-column">
+        <BoardSection
+          gameReview={gameReview}
+          boardPosition={boardPosition}
+          onPreviousMove={handlePreviousMove}
+          onNextMove={handleNextMove}
+          selectedMoveIndex={selectedMoveIndex}
+        />
+      </div>
+
+      <aside className="review-sidebar">
+        <header className="review-sidebar-header">
+            <h2>Game Review</h2>
+        </header>
+
+        {reviewMode === "summary" ? (
+          <GameSummaryPanel
+            gameReview={gameReview}
+            onStartReview={handleStartReview}
+          />
+        ) : (
+          <ActiveReviewPanel
+            reviewedMoves={gameReview.reviewed_moves}
+            selectedMove={selectedMove}
+            selectedMoveIndex={selectedMoveIndex}
+            onSelectMove={handleSelectMove}
+            onSummary={() => setReviewMode("summary")}
+          />
+        )}
+      </aside>
+
+    </div>
+  )
+};
+
+export default GameReviewPage;
