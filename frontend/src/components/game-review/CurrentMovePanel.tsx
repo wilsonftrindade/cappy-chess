@@ -1,4 +1,4 @@
-import type { ReviewedMove } from "../../types/analysis"
+import type { ReviewedMove } from "../../types/analysis";
 
 type CurrentMovePanelProps = {
     move: ReviewedMove;

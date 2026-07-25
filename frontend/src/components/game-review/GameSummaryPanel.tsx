@@ -1,4 +1,4 @@
-import type { GameReviewResponse } from "../../types/analysis"
+import type { GameReviewResponse } from "../../types/analysis";
 
 const CLASSIFICATIONS = [
   "Best",

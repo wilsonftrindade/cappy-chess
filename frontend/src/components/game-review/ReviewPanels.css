@@ -1,0 +1,380 @@
+/* =========================
+   Summary mode
+   ========================= */
+
+.game-summary-panel {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  padding: 22px;
+}
+
+.game-summary-header {
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+.game-summary-header h2 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 23px;
+}
+
+.game-summary-header p {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+}
+
+.accuracy-summary {
+  display: grid;
+  grid-template-columns: minmax(95px, 1fr) 82px 82px;
+  gap: 10px;
+  align-items: center;
+}
+
+.accuracy-summary > span {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.player-accuracy {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  text-align: center;
+}
+
+.player-accuracy span {
+  width: 100%;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-accuracy strong {
+  color: var(--text);
+  font-size: 20px;
+}
+
+.classification-summary {
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.classification-row {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 58px;
+  gap: 8px;
+  align-items: center;
+  min-height: 47px;
+  border-bottom: 1px solid #eee6dc;
+  text-align: center;
+}
+
+.classification-row > span {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.classification-row strong {
+  color: var(--text);
+  font-size: 15px;
+}
+
+/* These colors rely on the fixed order:
+   Best, Excellent, Good, Inaccuracy, Mistake, Blunder. */
+.classification-row:nth-child(1) > span {
+  color: #6f9f3e;
+}
+
+.classification-row:nth-child(2) > span {
+  color: #83ad55;
+}
+
+.classification-row:nth-child(3) > span {
+  color: #7f9870;
+}
+
+.classification-row:nth-child(4) > span {
+  color: #c99522;
+}
+
+.classification-row:nth-child(5) > span {
+  color: #d17b35;
+}
+
+.classification-row:nth-child(6) > span {
+  color: #c95852;
+}
+
+.start-review-button {
+  width: 100%;
+  min-height: 56px;
+  margin-top: auto;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--accent);
+  color: white;
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    transform 100ms ease;
+}
+
+.start-review-button:hover {
+  background: var(--accent-hover)
+}
+
+.start-review-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.start-review-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+
+/* =========================
+   Active review mode
+   ========================= */
+
+.active-review-panel {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 15px;
+  padding: 17px;
+}
+
+.current-move-panel {
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-soft);
+}
+
+.played-move-review,
+.best-move-review {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.best-move-review {
+  border-top: 1px solid var(--border);
+}
+
+.played-move-review strong,
+.best-move-review strong {
+  color: var(--text);
+  font-size: 18px;
+}
+
+.evaluation-badge {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  color: var(--text);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.move-review-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 15px 15px;
+}
+
+.move-review-details p {
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #e6dbce;
+  border-radius: 7px;
+  background: white;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.move-review-details strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--text);
+}
+
+
+/* =========================
+   Move list
+   ========================= */
+
+.move-list-container {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+}
+
+.move-list-container h3 {
+  margin: 0;
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-brown);
+  color: var(--text);
+  font-size: 16px;
+}
+
+.move-list {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 7px 8px 12px;
+  scrollbar-color: #c9b7a3 transparent;
+  scrollbar-width: thin;
+}
+
+.move-list::-webkit-scrollbar,
+.game-summary-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.move-list::-webkit-scrollbar-thumb,
+.game-summary-panel::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #c9b7a3;
+}
+
+.move-row {
+  display: grid;
+  grid-template-columns: 38px 1fr 1fr;
+  gap: 4px;
+  align-items: center;
+  min-height: 38px;
+}
+
+.move-row > span {
+  padding-right: 4px;
+  color: var(--text-light);
+  font-size: 13px;
+  text-align: right;
+}
+
+.move-button {
+  min-width: 0;
+  padding: 8px 9px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font-weight: 650;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.move-button:hover {
+  background: var(--accent-soft);
+}
+
+.move-button.selected {
+  background: var(--accent);
+  color: white;
+}
+
+
+/* =========================
+   Active review footer button
+   ========================= */
+
+.go-to-summary-button {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: white;
+  color: var(--accent);
+  font-weight: 750;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    transform 100ms ease;
+}
+
+.go-to-summary-button:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.go-to-summary-button:active {
+  transform: translateY(1px);
+}
+
+
+/* =========================
+   Responsive review panels
+   ========================= */
+
+@media (max-width: 1050px) {
+  .active-review-panel {
+    min-height: 620px;
+  }
+
+  .move-list {
+    max-height: 420px;
+  }
+}
+
+@media (max-width: 640px) {
+  .game-summary-panel,
+  .active-review-panel {
+    padding: 14px;
+  }
+
+  .accuracy-summary {
+    grid-template-columns: minmax(78px, 1fr) 70px 70px;
+  }
+
+  .classification-row {
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+  }
+
+  .move-review-details {
+    grid-template-columns: 1fr;
+  }
+}

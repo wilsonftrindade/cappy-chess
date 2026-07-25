@@ -1,3 +1,5 @@
+import "./PgnInput.css"
+
 type PgnInputProps = {
     isLoading: boolean;
     onPgnChange: (value: string) => void;

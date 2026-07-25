@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import "./GameReviewPage.css";
+import "./ReviewPanels.css";
+import { useState } from 'react';
 import type { GameReviewResponse } from "../../types/analysis";
 import BoardSection from "./BoardSection";
-import GameSummaryPanel from "./GameSummaryPanel"
+import GameSummaryPanel from "./GameSummaryPanel";
 import ActiveReviewPanel from './ActiveReviewPanel';
 
 const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"

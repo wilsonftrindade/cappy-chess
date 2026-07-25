@@ -1,0 +1,81 @@
+/* =========================
+   Main review layout
+   ========================= */
+
+.game-review-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(350px, 420px);
+  gap: 20px;
+  align-items: start;
+}
+
+.board-column {
+  display: flex;
+  min-width: 0;
+  justify-content: center;
+}
+/* =========================
+   Review sidebar
+   ========================= */
+
+.review-sidebar {
+  position: sticky;
+  top: 16px;
+  display: flex;
+  height: clamp(640px, 78vh, 820px);
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.review-sidebar-header {
+  display: flex;
+  min-height: 64px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-brown);
+}
+
+.review-sidebar-header h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+
+
+/* =========================
+   Responsive review-page layout
+   ========================= */
+
+@media (max-width: 1050px) {
+  .game-review-page {
+    grid-template-columns: 1fr;
+  }
+
+  .board-column,
+  .game-review-page > .board-container,
+  .review-sidebar {
+    width: min(100%, 820px);
+    margin-inline: auto;
+  }
+
+  .review-sidebar {
+    position: static;
+    height: auto;
+    min-height: 620px;
+  }
+}
+
+@media (max-width: 640px) {
+  .review-sidebar {
+    min-height: 560px;
+  }
+}

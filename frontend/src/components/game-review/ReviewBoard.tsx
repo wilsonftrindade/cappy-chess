@@ -1,4 +1,4 @@
-import { Chessboard } from 'react-chessboard'
+import { Chessboard } from 'react-chessboard';
 
 type ReviewBoardProps = {
    boardOptions: any;

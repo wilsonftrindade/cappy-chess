@@ -1,0 +1,151 @@
+/* =========================
+   Board section layout
+   ========================= */
+
+.board-section {
+  display: flex;
+  width: min(100%, 820px);
+  min-width: 0;
+  flex-direction: column;
+  gap: 9px;
+}
+/* =========================
+   Player information
+   ========================= */
+
+.player-info {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow-small);
+}
+
+.player-color {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-brown);
+  color: var(--text);
+}
+
+.player-color::before {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.player-color.white::before {
+  content: "♙";
+}
+
+.player-color.black {
+  background: #d8c7b4;
+}
+
+.player-color.black::before {
+  content: "♟";
+}
+
+.player-info > div {
+  min-width: 0;
+}
+
+.player-info strong {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.player-info > div span {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+
+/* =========================
+   Chessboard
+   ========================= */
+
+.review-board {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.review-board > h3 {
+  display: none;
+}
+
+/* Supports either the new or previous inner wrapper class name. */
+.board-container {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+}
+
+.board-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.board-controls button {
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    transform 100ms ease;
+}
+
+.board-controls button:hover:not(:disabled) {
+  border-color: #c3ad95;
+  background: var(--surface-brown);
+}
+
+.board-controls button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.board-controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+
+/* =========================
+   Responsive board section
+   ========================= */
+
+@media (max-width: 640px) {
+  .player-info {
+    min-height: 50px;
+  }
+
+  .player-color {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .player-color::before {
+    font-size: 27px;
+  }
+}

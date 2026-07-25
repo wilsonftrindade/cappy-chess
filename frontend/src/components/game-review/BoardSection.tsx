@@ -1,6 +1,7 @@
-import ReviewBoard from "./ReviewBoard"
-import PlayerInfo from "./PlayerInfo"
-import type { GameReviewResponse } from "../../types/analysis"
+import "./BoardSection.css";
+import ReviewBoard from "./ReviewBoard";
+import PlayerInfo from "./PlayerInfo";
+import type { GameReviewResponse } from "../../types/analysis";
 
 type BoardSectionProps = {
   gameReview: GameReviewResponse;
