@@ -1,10 +1,13 @@
-from app.schemas.analysis import GameReviewResponse, ReviewedMove, PlayerReviewSummary
+from collections.abc import Callable
+
+from app.schemas.analysis import GameReviewResponse, ReviewedMove
 from .pgn_parser import parse_pgn
 from .engine import start_stockfish, analyze_board, create_and_validate_board, build_move_review
 from .summary import build_player_summary
 
+ProgressCallback = Callable[[int, int], None]
 
-def review_game(pgn: str, depth: int) -> GameReviewResponse:
+def review_game(pgn: str, depth: int, progress_callback: ProgressCallback | None = None) -> GameReviewResponse:
     # 1. Parse the PGN.
     # 2. Start Stockfish once.
     # 3. Analyze the initial position.
@@ -17,6 +20,7 @@ def review_game(pgn: str, depth: int) -> GameReviewResponse:
     # 10. Return GameReviewResponse.
 
     parsed_game = parse_pgn(pgn)
+    total_plies = len(parsed_game.moves)
 
     reviewed_moves = []
 
@@ -34,11 +38,10 @@ def review_game(pgn: str, depth: int) -> GameReviewResponse:
     board_before = create_and_validate_board(fen_before)
 
     engine = start_stockfish()
-
     try: 
         analysis_before = analyze_board(board_before, engine, depth)
 
-        for parsed_move in parsed_game.moves:
+        for completed_plies, parsed_move in enumerate(parsed_game.moves, start=1):
             fen_after = parsed_move.fen_after
             board_after = create_and_validate_board(fen_after)
             analysis_after = analyze_board(board_after, engine, depth)
@@ -59,6 +62,9 @@ def review_game(pgn: str, depth: int) -> GameReviewResponse:
             reviewed_moves.append(reviewed_move)
 
             analysis_before = analysis_after
+
+            if progress_callback is not None:
+                progress_callback(completed_plies, total_plies)
         
         white_summary = build_player_summary(reviewed_moves, "white")
         black_summary = build_player_summary(reviewed_moves, "black")
