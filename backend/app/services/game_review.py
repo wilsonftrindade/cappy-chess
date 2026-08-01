@@ -31,7 +31,9 @@ def review_game(pgn: str, depth: int, progress_callback: ProgressCallback | None
             result=parsed_game.result,
             white_elo=parsed_game.white_elo,
             black_elo=parsed_game.black_elo,
-            reviewed_moves=reviewed_moves
+            reviewed_moves=reviewed_moves,
+            white_summary=build_player_summary(reviewed_moves, "white"),
+            black_summary=build_player_summary(reviewed_moves, "black")
         )
 
     fen_before = parsed_game.moves[0].fen_before

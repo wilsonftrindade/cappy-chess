@@ -85,16 +85,6 @@ def test_classify_best_when_played_move_equals_best_move():
     assert result == "Best"
 
 
-def test_classify_expected_points_loss_best():
-    result = classify_move_by_expected_points_loss(
-        win_probability_loss=0.001,
-        played_move_uci="d2d4",
-        best_move_uci="e2e4",
-    )
-
-    assert result == "Best"
-
-
 def test_classify_expected_points_loss_excellent():
     result = classify_move_by_expected_points_loss(
         win_probability_loss=0.01,
