@@ -1,48 +1,15 @@
-import type { AnalysisResponse, MoveReviewResponse, GameReviewResponse } from "../types/analysis";
+import type { ReviewJobCreatedResponse, ReviewJob } from "../types/reviewJob";
 
 const API_BASE_URL = "http://localhost:8000";
 
-export async function analyzeFen(fen: string, depth: number): Promise<AnalysisResponse> {
-    const response = await fetch(`${API_BASE_URL}/api/analysis/analyze`, {
+export async function createReviewJob(pgn: string, depth: number, signal?: AbortSignal): Promise<ReviewJobCreatedResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/analysis/review-jobs`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ fen, depth })
-    });
-    
-    if (!response.ok) {
-        throw new Error('Failed to analyze FEN');
-    }
-
-    const data = await response.json();
-    return data;
-}
-
-export async function reviewMove(fenBefore: string, moveUci: string, depth: number): Promise<MoveReviewResponse> {
-    const response = await fetch(`${API_BASE_URL}/api/analysis/move-review`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ fen_before: fenBefore , move_uci: moveUci, depth })
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to review move');
-    }
-
-    const data = await response.json();
-    return data;
-}
-
-export async function reviewGame(pgn: string, depth: number): Promise<GameReviewResponse> {
-    const response = await fetch(`${API_BASE_URL}/api/analysis/game-review`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ pgn, depth })
+        body: JSON.stringify({ pgn, depth }),
+        signal
     });
 
     if (!response.ok) {
@@ -51,5 +18,16 @@ export async function reviewGame(pgn: string, depth: number): Promise<GameReview
 
     const data = await response.json();
     return data;
+
 }
 
+export async function getReviewJob(jobId: string, signal?: AbortSignal): Promise<ReviewJob> {
+    const response = await fetch(`${API_BASE_URL}/api/analysis/review-jobs/${jobId}`, { signal });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch review job');
+    }
+
+    const data = await response.json();
+    return data;
+}

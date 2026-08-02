@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react'
-import { reviewGame } from './api/analysis'
+import { useState, useEffect, useRef } from 'react'
+import { createReviewJob, getReviewJob } from './api/analysis'
 import type { GameReviewResponse } from './types/analysis'
+import type { ReviewJob } from './types/reviewJob'
 import GameReviewPage from './components/game-review/GameReviewPage'
 import PgnInput from './components/pgn/PgnInput'
 import './App.css'
+
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function App() {
   const [backendStatus, setBackendStatus] = useState("checking...")
@@ -12,6 +17,9 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [gameReview, setGameReview] = useState<GameReviewResponse | null>(null)
+
+  const[reviewJob, setReviewJob] = useState<null | ReviewJob>(null)
+  const pollingControllerRef = useRef<AbortController | null>(null);
 
   // Health check for the backend server
   useEffect(() => {
@@ -35,22 +43,67 @@ function App() {
     fetchBackendData();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (pollingControllerRef.current) {
+        pollingControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   const handleReviewGame = async () => {
+
+    pollingControllerRef.current?.abort();
+    const controller = new AbortController();
+    pollingControllerRef.current = controller;
+
+    setReviewJob(null);
     setGameReview(null);
     setError (null);
     setIsLoading(true);
 
     try {
-      const result = await reviewGame(pgn, 17)
-      setGameReview(result)
+      const createdJob = await createReviewJob(pgn, 17, controller.signal);
+      
+      while (!controller.signal.aborted) {
+        const currentJob = await getReviewJob(createdJob.job_id, controller.signal);
+        setReviewJob(currentJob);
+        
+        if (currentJob.status === "completed") {
+          if (currentJob.result === null) {
+            setError("Job completed but no result was returned");
+            break;
+          }
+          setGameReview(currentJob.result);
+          break;
+
+        } else if (currentJob.status === "failed") {
+          setError(currentJob.error || "Game review job failed");
+          break;
+        }
+
+        await delay(1000); // Poll every second
+     }
+   }
+
+   catch(error: unknown) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      } 
+      
+      if (error instanceof Error) {
+        setError(error.message);
+      }
+      else {
+        setError("An unknown error occurred while reviewing the game");
+      }
+   }
+   finally {
+    if (pollingControllerRef.current === controller) {
+      pollingControllerRef.current = null;
     }
-    catch (error) {
-      setError("Failed to review game")
-    }
-    finally {
-      setIsLoading(false) 
-    }
+      setIsLoading(false);
+   }
   };
 
   return (
@@ -67,6 +120,18 @@ function App() {
           onAnalyzeGame={handleReviewGame} 
           isLoading={isLoading} />
       </div>
+
+      {reviewJob && isLoading && (
+        <div>
+          <p>Status: {reviewJob.status}</p>
+
+          <p>
+            Progress: {reviewJob.completed_plies}
+            {" / "}
+            {reviewJob.total_plies ?? "unknown"}
+          </p>
+        </div>
+      )}
 
       {error && <p className="error-message">{error}</p>}
 

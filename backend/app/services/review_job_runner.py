@@ -6,8 +6,6 @@ from fastapi import HTTPException
 from .game_review import review_game
 from .review_job_store import mark_review_job_running, mark_review_job_completed, mark_review_job_failed, update_review_job_progress
 
-
-
 logger = logging.getLogger(__name__)
 
 def run_review_job(job_id: UUID, pgn: str, depth: int) -> None:
