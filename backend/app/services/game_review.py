@@ -48,8 +48,8 @@ def review_game(pgn: str, depth: int, progress_callback: ProgressCallback | None
             board_after = create_and_validate_board(fen_after)
             analysis_after = analyze_board(board_after, engine, depth)
 
-            move_uci = parsed_move.uci
-            move_san = parsed_move.san
+            move_uci = parsed_move.move_uci
+            move_san = parsed_move.move_san
             is_white = parsed_move.color == "white"
 
             move_review = build_move_review(move_uci, move_san, analysis_before, analysis_after, is_white)

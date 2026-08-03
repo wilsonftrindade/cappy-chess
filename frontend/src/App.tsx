@@ -1,10 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
+import type { ParsedGameResponse } from './types/game'
 import { createReviewJob, getReviewJob } from './api/analysis'
 import type { GameReviewResponse } from './types/analysis'
 import type { ReviewJob } from './types/reviewJob'
 import GameReviewPage from './components/game-review/GameReviewPage'
 import PgnInput from './components/pgn/PgnInput'
+import AnalysisOverlay from './components/common/AnalysisOverlay'
+import { parseGame } from './api/games'
+
 import './App.css'
+import AnalysisPreviewPage from './components/game-review/AnalysisPreviewPage'
+
+const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -14,6 +21,7 @@ function App() {
   const [backendStatus, setBackendStatus] = useState("checking...")
 
   const [pgn, setPgn] = useState("")
+  const [parsedGame, setParsedGame] = useState<ParsedGameResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [gameReview, setGameReview] = useState<GameReviewResponse | null>(null)
@@ -56,11 +64,19 @@ function App() {
     pollingControllerRef.current?.abort();
     const controller = new AbortController();
     pollingControllerRef.current = controller;
-
+    setParsedGame(null);
     setReviewJob(null);
     setGameReview(null);
     setError (null);
     setIsLoading(true);
+
+    try {
+      const parsedGameResult = await parseGame(pgn, controller.signal);
+      setParsedGame(parsedGameResult);
+    }
+    catch (error) {
+      setError("Failed to parse game");
+    }
 
     try {
       const createdJob = await createReviewJob(pgn, 17, controller.signal);
@@ -86,7 +102,7 @@ function App() {
      }
    }
 
-   catch(error: unknown) {
+    catch(error: unknown) {
       if (error instanceof DOMException && error.name === "AbortError") {
         return;
       } 
@@ -98,13 +114,26 @@ function App() {
         setError("An unknown error occurred while reviewing the game");
       }
    }
-   finally {
-    if (pollingControllerRef.current === controller) {
-      pollingControllerRef.current = null;
+
+    finally {
+      if (pollingControllerRef.current === controller) {
+        pollingControllerRef.current = null;
+      }
+        setIsLoading(false);
     }
-      setIsLoading(false);
-   }
   };
+
+  const completedPlies = reviewJob?.completed_plies ?? 0;
+  const previewMoveIndex = completedPlies > 0 ? completedPlies - 1 : 0; 
+  const previewBoardFEN = 
+    parsedGame === null
+      ? STARTING_FEN
+      : previewMoveIndex === null
+        ? parsedGame.moves[0]?.fen_before ??
+          STARTING_FEN
+        : parsedGame.moves[previewMoveIndex]
+            ?.fen_after ?? STARTING_FEN;
+
 
   return (
     <main className="app">
@@ -113,6 +142,10 @@ function App() {
         <p>Backend status: {backendStatus}</p>
       </header>
 
+      <AnalysisOverlay
+        isVisible={isLoading}
+        reviewJob={reviewJob} />
+      
       <div className="pgn-input-container"> 
         <PgnInput 
           pgn={pgn} 
@@ -121,23 +154,17 @@ function App() {
           isLoading={isLoading} />
       </div>
 
-      {reviewJob && isLoading && (
-        <div>
-          <p>Status: {reviewJob.status}</p>
-
-          <p>
-            Progress: {reviewJob.completed_plies}
-            {" / "}
-            {reviewJob.total_plies ?? "unknown"}
-          </p>
-        </div>
-      )}
-
       {error && <p className="error-message">{error}</p>}
 
-      {gameReview ? (
+      {isLoading && parsedGame ? (
+        <AnalysisPreviewPage
+          parsedGame={parsedGame}
+          boardPosition={previewBoardFEN}
+          currentMoveIndex={previewMoveIndex} />
+      ) : gameReview ? (
         <GameReviewPage gameReview={gameReview} />
       ) : null}
+
     </main>
   );
 }

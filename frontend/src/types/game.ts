@@ -15,15 +15,15 @@ export type ParseGameRequest = {
 export type ParsedMove = {
   move_number: number;
   color: PlayerColor;
-  san: string;
-  uci: string;
+  move_san: string;
+  move_uci: string;
   fen_before: string;
   fen_after: string;
 };
 
 export type ParsedGameResponse = {
-  white: string | null;
-  black: string | null;
+  white: string;
+  black: string;
   result: string | null;
   white_elo: number | null;
   black_elo: number | null;

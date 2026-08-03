@@ -1,7 +1,8 @@
 import type { DisplayMove } from '../types/game'
 import type { ReviewedMove } from '../types/analysis';
+import type { ParsedMove } from '../types/game';
 
-export function groupMoves(moves: ReviewedMove[]): DisplayMove[] {
+export function groupMoves(moves: ReviewedMove[] | ParsedMove[]): DisplayMove[] {
     const displayMoves: DisplayMove[] = [];
 
     for (let i = 0; i < moves.length; i += 2) {

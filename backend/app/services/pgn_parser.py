@@ -36,8 +36,8 @@ def parse_pgn(pgn_text: str) -> ParsedGameResponse:
         parsed_move = ParsedMove(
             move_number=move_number,
             color=color,
-            san=san,
-            uci=uci,
+            move_san=san,
+            move_uci=uci,
             fen_before=fen_before,
             fen_after=fen_after
         )

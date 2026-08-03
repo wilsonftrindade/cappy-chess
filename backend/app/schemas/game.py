@@ -7,8 +7,8 @@ class ParseGameRequest(BaseModel):
 class ParsedMove(BaseModel):
     move_number: int
     color: str
-    san: str
-    uci: str
+    move_san: str
+    move_uci: str
     fen_before: str
     fen_after: str
 

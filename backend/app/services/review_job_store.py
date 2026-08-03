@@ -2,7 +2,6 @@ from uuid import UUID, uuid4
 from app.schemas.review_job import ReviewJob, ReviewJobStatus
 from app.schemas.analysis import GameReviewResponse
 
-
 _review_jobs: dict[UUID, ReviewJob] = {}
 
 def create_review_job() -> ReviewJob:
