@@ -98,7 +98,7 @@ function App() {
           break;
         }
 
-        await delay(1000); // Poll every second
+        await delay(500); // Poll every half a second
      }
    }
 
@@ -145,7 +145,7 @@ function App() {
       <AnalysisOverlay
         isVisible={isLoading}
         reviewJob={reviewJob} />
-      
+
       <div className="pgn-input-container"> 
         <PgnInput 
           pgn={pgn} 
