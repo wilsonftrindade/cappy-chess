@@ -17,7 +17,7 @@ def get_review_job(job_id: UUID) -> ReviewJob | None:
     except NoSuchJobError:
         return None
 
-    job_status = map_rq_status(job.get_status())
+    job_status = map_rq_status(job.get_status(refresh=True))
 
     metadata = job.get_meta(refresh=True)
 
@@ -29,9 +29,10 @@ def get_review_job(job_id: UUID) -> ReviewJob | None:
             result = GameReviewResponse.model_validate_json(raw_result)
 
     if (job_status == ReviewJobStatus.FAILED):
-        error = str(metadata.get("error"))
+        raw_error = metadata.get("error")
+        error = str(raw_error)
 
-        if error is None:
+        if raw_error is None:
             error = "Game review failed"
     else:
         error = None
@@ -70,7 +71,7 @@ def enqueue_review_job(pgn: str, depth: int) -> ReviewJobCreatedResponse:
     
     return ReviewJobCreatedResponse(job_id=job_id, status=ReviewJobStatus.QUEUED)
 
-def map_rq_status(job_status: object) -> str:
+def map_rq_status(job_status: object) -> JobStatus:
 
     if job_status in (JobStatus.QUEUED, JobStatus.SCHEDULED, JobStatus.DEFERRED, JobStatus.CREATED):
         return "queued"

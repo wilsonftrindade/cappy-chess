@@ -24,6 +24,6 @@ def get_game_review_job(job_id: UUID):
     job = get_review_job(job_id)
 
     if job is None:
-        raise HTTPException(status_code=status.HTT, detail="Job not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
     
     return job

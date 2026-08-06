@@ -6,7 +6,7 @@ from .game_review import review_game
 
 logger = logging.getLogger(__name__)
 
-def run_review_job(job_id: UUID, pgn: str, depth: int) -> dict[str, Any]:
+def run_review_job(job_id: UUID, pgn: str, depth: int) -> str:
     rq_job = get_current_job()
 
     if rq_job is None:
