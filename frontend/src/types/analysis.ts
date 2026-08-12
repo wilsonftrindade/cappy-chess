@@ -57,25 +57,24 @@ export type ReviewedMove = {
     win_probability_loss: number | null;
     classification: string | null;
     move_accuracy: number | null;
-    move_number: number
-    color: string
-    fen_after: string
+    move_number: number;
+    color: string;
+    fen_after: string;
 }
 
 export type PlayerReviewSummary = {
-    move_count: number
-    accuracy: number | null
+    move_count: number;
+    accuracy: number | null;
     classification_counts: Record<string, number>;
 }
 
 export type GameReviewResponse = {
-    white: string
-    black: string
-    result: string
-    white_elo: number | null
-    black_elo: number | null
-    reviewed_moves: ReviewedMove[]
-    white_summary: PlayerReviewSummary 
-    black_summary: PlayerReviewSummary 
+    white: string;
+    black: string;
+    result: string;
+    white_elo: number | null;
+    black_elo: number | null;
+    reviewed_moves: ReviewedMove[];
+    white_summary: PlayerReviewSummary; 
+    black_summary: PlayerReviewSummary;
 }
-

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import type { ParsedGameResponse } from './types/game'
-import { createReviewJob, getReviewJob } from './api/analysis'
+import { createReviewJob, getReviewJob, getPersistedReview } from './api/analysis'
 import type { GameReviewResponse } from './types/analysis'
 import type { ReviewJob } from './types/reviewJob'
 import GameReviewPage from './components/game-review/GameReviewPage'
@@ -75,22 +75,46 @@ function App() {
       setParsedGame(parsedGameResult);
     }
     catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
       setError("Failed to parse game");
     }
 
     try {
       const createdJob = await createReviewJob(pgn, 17, controller.signal);
+      if (createdJob.status === "completed") {
+        const persistedReview =  await getPersistedReview(createdJob.job_id, controller.signal);
+         if (persistedReview.result === null) {
+          setError("Review completed but no persisted result was found");
+        }
+
+        setGameReview(persistedReview.result);
+        return;
+      }
+
+      if (createdJob.status === "failed") {
+        const persistedReview =  await getPersistedReview(createdJob.job_id, controller.signal);
+        setError(persistedReview.error || "Review job failed");
+        return;
+      }
       
       while (!controller.signal.aborted) {
         const currentJob = await getReviewJob(createdJob.job_id, controller.signal);
         setReviewJob(currentJob);
         
         if (currentJob.status === "completed") {
-          if (currentJob.result === null) {
-            setError("Job completed but no result was returned");
+          const currentReview = await getPersistedReview(
+            createdJob.job_id,
+            controller.signal
+          );
+
+          if (currentReview.result === null) {
+            setError("Review completed but no persisted result was found");
             break;
           }
-          setGameReview(currentJob.result);
+
+          setGameReview(currentReview.result);
           break;
 
         } else if (currentJob.status === "failed") {

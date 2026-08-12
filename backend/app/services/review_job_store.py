@@ -50,15 +50,13 @@ def get_review_job(job_id: UUID) -> ReviewJob | None:
     )
 
 
-def enqueue_review_job(pgn: str, depth: int) -> ReviewJobCreatedResponse:
-    job_id = uuid4()
-
+def enqueue_review_job(pgn: str, depth: int, review_id: UUID) -> ReviewJobCreatedResponse:
     review_queue.enqueue(
         run_review_job,
-        job_id,
+        review_id,
         pgn,
         depth,
-        job_id=str(job_id),
+        job_id=str(review_id),
         job_timeout=JOB_TIMEOUT,
         result_ttl=JOB_RESULT_TTL,
         failure_ttl=JOB_FAILURE_TTL,
@@ -69,7 +67,7 @@ def enqueue_review_job(pgn: str, depth: int) -> ReviewJobCreatedResponse:
         }
     )
     
-    return ReviewJobCreatedResponse(job_id=job_id, status=ReviewJobStatus.QUEUED)
+    return ReviewJobCreatedResponse(job_id=review_id, status=ReviewJobStatus.QUEUED)
 
 def map_rq_status(job_status: object) -> JobStatus:
 

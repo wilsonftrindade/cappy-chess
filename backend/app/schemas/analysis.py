@@ -58,7 +58,7 @@ class GameReviewResponse(BaseModel):
     black_elo: int | None
     reviewed_moves: list[ReviewedMove]
     white_summary: PlayerReviewSummary 
-    black_summary: PlayerReviewSummary 
+    black_summary: PlayerReviewSummary
 
 
 

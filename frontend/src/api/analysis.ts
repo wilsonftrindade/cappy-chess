@@ -1,4 +1,4 @@
-import type { ReviewJobCreatedResponse, ReviewJob } from "../types/reviewJob";
+import type { ReviewJobCreatedResponse, ReviewJob, StoredReviewResponse } from "../types/reviewJob";
 
 const API_BASE_URL = "http://localhost:8000";
 
@@ -26,6 +26,17 @@ export async function getReviewJob(jobId: string, signal?: AbortSignal): Promise
 
     if (!response.ok) {
         throw new Error('Failed to fetch review job');
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+export async function getPersistedReview(jobId: string, signal?: AbortSignal): Promise<StoredReviewResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/analysis/reviews/${jobId}`, { signal });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch review');
     }
 
     const data = await response.json();

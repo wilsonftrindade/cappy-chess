@@ -16,3 +16,14 @@ export type ReviewJob = {
     error: string | null;
 }
 
+export type StoredReviewResponse= {
+    id: string;
+    game_id: string;
+    depth: number;
+    status: ReviewJobStatus;
+    result: GameReviewResponse | null;
+    error: string | null;
+    created_at: string;
+    completed_at: string | null;
+}
+

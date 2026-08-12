@@ -19,6 +19,7 @@ class Game(Base):
   source: Mapped[str] = mapped_column(String(20), nullable=False, default="manual")
   external_id: Mapped[str | None] = mapped_column(String(200), nullable=True)
   created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+  game_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
   reviews: Mapped[list["Review"]] = relationship(back_populates="game", cascade="all, delete-orphan")
 
 

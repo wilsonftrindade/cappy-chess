@@ -1,4 +1,5 @@
 import chess.pgn
+from hashlib import sha256
 import io
 from fastapi import HTTPException
 from app.schemas.game import ParsedGameResponse, ParsedMove
@@ -8,7 +9,22 @@ def parse_elo(elo: str | None)-> int | None:
         return int(elo)
     except (ValueError, TypeError):
         return None
-    
+
+def compute_game_hash(pgn: str) -> str:
+    game = chess.pgn.read_game(io.StringIO(pgn))
+
+    if game is None:
+        raise ValueError("Invalid PGN")
+
+    id_headers = ("Event", "Site", "Date", "Round", "White", "Black", "Result", "FEN")
+    normalized_headers = "|".join(game.headers.get(header, "") for header in id_headers)
+
+    normalized_moves = " ".join(move.uci() for move in game.mainline_moves())
+
+    canonical_game = (f"{normalized_headers}|{normalized_moves}")
+    game_hash = sha256(canonical_game.encode()).hexdigest()
+    return game_hash
+
 
 def parse_pgn(pgn_text: str) -> ParsedGameResponse:
 
