@@ -1,7 +1,7 @@
 from uuid import UUID, uuid4
 from app.schemas.review_job import ReviewJob, ReviewJobStatus, ReviewJobCreatedResponse
 from app.core.redis_client import redis_client
-from app.core.review_queue import review_queue
+from app.core.redis_client import review_queue
 from app.services.review_job_runner import run_review_job
 from app.schemas.analysis import GameReviewResponse
 from rq.job import Job, JobStatus, NoSuchJobError

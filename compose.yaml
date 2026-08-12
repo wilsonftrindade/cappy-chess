@@ -22,5 +22,27 @@ services:
       timeout: 3s
       retries: 5
 
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: chess_coach
+      POSTGRES_PASSWORD: chess_coach_dev
+      POSTGRES_DB: chess_coach
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U chess_coach -d chess_coach
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
 volumes:
   redis-data:
+  postgres_data:
