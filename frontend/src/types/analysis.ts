@@ -36,9 +36,13 @@ export type MoveReviewResponse = {
     move_accuracy: number | null;
 }
 
+export type GameSource = "manual" | "chess_com" | "lichess";
+
 export type GameReviewRequest = {
     pgn: string;
     depth: number;
+    source: GameSource;
+    external_id: string | null;
 }
 
 export type ReviewedMove = {

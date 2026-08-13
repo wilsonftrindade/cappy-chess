@@ -4,10 +4,11 @@ from sqlalchemy import select
 from app.models.game import Game
 from app.models.review import Review
 from app.schemas.review_job import ReviewJobStatus
+from app.schemas.analysis import GameSource
 from app.schemas.game import ParsedGameResponse
 from app.services.pgn_parser import parse_pgn, compute_game_hash
 
-def get_or_create_game_and_review(session: Session, pgn: str, depth: int) -> tuple[Review, bool]:
+def get_or_create_game_and_review(session: Session, pgn: str, depth: int, source: GameSource, external_id: str | None) -> tuple[Review, bool]:
   """
     Create and persit new game and new review to postgres and returns a tuple with the review and a 
     boolean indicating whether a new review was created. If game already exists and review does not, 
@@ -28,6 +29,8 @@ def get_or_create_game_and_review(session: Session, pgn: str, depth: int) -> tup
       black_elo=parsed_game.black_elo,
       result=parsed_game.result,
       game_hash=game_hash,
+      source=source,
+      external_id=external_id
     )
 
     session.add(game)

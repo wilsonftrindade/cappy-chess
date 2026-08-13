@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from enum import StrEnum
 
 class AnalysisRequest(BaseModel):
     fen: str
@@ -34,9 +35,16 @@ class MoveReviewResponse(BaseModel):
     classification: str | None
     move_accuracy: float | None
 
+class GameSource(StrEnum):
+    MANUAL = "manual"
+    CHESS_COM = "chess_com"
+    LICHESS = "lichess"
+
 class GameReviewRequest(BaseModel):
     pgn: str
     depth: int
+    source: GameSource = GameSource.MANUAL
+    external_id: str | None = None
 
 class ReviewedMove(MoveReviewResponse):
     move_number: int
@@ -57,6 +65,10 @@ class GameReviewResponse(BaseModel):
     reviewed_moves: list[ReviewedMove]
     white_summary: PlayerReviewSummary 
     black_summary: PlayerReviewSummary
+
+
+
+
 
 
 
