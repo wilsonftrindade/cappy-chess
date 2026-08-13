@@ -13,6 +13,7 @@ router = APIRouter()
 def create_game_review_job(_request: GameReviewRequest, db: Session = Depends(get_db)):
     review, created = get_or_create_game_and_review(db, _request.pgn, _request.depth)
 
+    # return the existing review id and status from Postgres
     if not created:
         return ReviewJobCreatedResponse(job_id=review.id, status=review.status)
    

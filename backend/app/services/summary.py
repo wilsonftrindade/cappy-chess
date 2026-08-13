@@ -3,7 +3,6 @@ from .classification import player_win_probability
 from statistics import pstdev
 
 def build_player_summary(reviewed_moves: list[ReviewedMove], color: str) -> PlayerReviewSummary:
-
     player_moves = []
     for reviewed_move in reviewed_moves:
         if reviewed_move.color == color:
@@ -17,7 +16,6 @@ def build_player_summary(reviewed_moves: list[ReviewedMove], color: str) -> Play
         accuracy=accuracy,
         classification_counts=classification_counts
     )
-
 
 def compute_player_accuracy(reviewed_moves: list[ReviewedMove], color: str) -> float:
     if not reviewed_moves:

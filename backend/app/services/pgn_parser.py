@@ -11,6 +11,16 @@ def parse_elo(elo: str | None)-> int | None:
         return None
 
 def compute_game_hash(pgn: str) -> str:
+    """
+    Return a fingerprint to identify duplicate games.
+
+    Parses the PGN, normalizes headers and moves,
+    then hashes the canonical representation with SHA-256.
+
+    Raises:
+        ValueError: If the PGN cannot be parsed.
+    """
+
     game = chess.pgn.read_game(io.StringIO(pgn))
 
     if game is None:

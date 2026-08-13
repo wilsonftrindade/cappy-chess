@@ -16,7 +16,7 @@ def get_review_job(job_id: UUID) -> ReviewJob | None:
 
     except NoSuchJobError:
         return None
-
+    
     job_status = map_rq_status(job.get_status(refresh=True))
 
     metadata = job.get_meta(refresh=True)

@@ -8,6 +8,12 @@ from app.schemas.game import ParsedGameResponse
 from app.services.pgn_parser import parse_pgn, compute_game_hash
 
 def get_or_create_game_and_review(session: Session, pgn: str, depth: int) -> tuple[Review, bool]:
+  """
+    Create and persit new game and new review to postgres and returns a tuple with the review and a 
+    boolean indicating whether a new review was created. If game already exists and review does not, 
+    only persist new review. If both already exist, return existing review. 
+
+  """
   parsed_game = parse_pgn(pgn)
   game_hash = compute_game_hash(pgn)
 

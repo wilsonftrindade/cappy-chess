@@ -98,7 +98,6 @@ def build_move_review(move_uci: str, move_san: str, analysis_before: AnalysisRes
 
     eval_cp_after = analysis_after.evaluation_cp
     mate_in_after = analysis_after.mate_in
-    fen_after = analysis_after.fen
 
     eval_cp_loss = compute_eval_cp_loss(eval_cp_before, eval_cp_after, is_white)
 
