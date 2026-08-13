@@ -12,9 +12,9 @@ class ImportedGame(BaseModel):
     black_elo: int | None
     result: str
     played_at: datetime
-    time_class: datetime
+    time_class: str
 
 class ImportedGamesResponse(BaseModel):
     username: str
-    sourece: GameSource
+    source: GameSource
     games: list[ImportedGame]
