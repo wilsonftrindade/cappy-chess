@@ -86,6 +86,7 @@ function App() {
 
     try {
       const createdJob = await createReviewJob(reviewPgn, 17, source, external_id, controller.signal);
+      setPgn("")
       if (createdJob.status === "completed") {
         const persistedReview =  await getPersistedReview(createdJob.job_id, controller.signal);
          if (persistedReview.result === null) {
@@ -151,7 +152,6 @@ function App() {
   };
 
   const handleImportedGameSelected = async (game: ImportedGame) => {
-    setPgn(game.pgn);
     await handleReviewGame(game.pgn, game.source, game.external_id);
   }
 
