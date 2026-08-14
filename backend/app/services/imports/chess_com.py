@@ -42,6 +42,7 @@ def transform_chess_com_game(game: dict) -> ImportedGame:
     
     return ImportedGame(
       pgn=game["pgn"],
+      source="chess_com",
       external_id=game["url"],
       white=game["white"]["username"],
       black=game["black"]["username"],

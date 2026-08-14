@@ -3,11 +3,11 @@ import "./PgnInput.css"
 type PgnInputProps = {
     isLoading: boolean;
     onPgnChange: (value: string) => void;
-    onAnalyzeGame: () => void;
+    onReviewGame: () => void;
     pgn: string
 };
 
-const PgnInput = ( { isLoading, onPgnChange, onAnalyzeGame, pgn }: PgnInputProps) => {
+const PgnInput = ( { isLoading, onPgnChange, onReviewGame, pgn }: PgnInputProps) => {
     return (
         <>
         <h2>Paste PGN</h2>
@@ -22,7 +22,7 @@ const PgnInput = ( { isLoading, onPgnChange, onAnalyzeGame, pgn }: PgnInputProps
 
         <br />
 
-        <button className="parse-button" onClick={onAnalyzeGame} disabled={isLoading || !pgn.trim()}>
+        <button className="parse-button" onClick={onReviewGame} disabled={isLoading || !pgn.trim()}>
           {isLoading ? "Reviewing Game..." : "Review Game"}
         </button>
         </>

@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import type { ParsedGameResponse } from './types/game'
 import { createReviewJob, getReviewJob, getPersistedReview } from './api/analysis'
-import type { GameReviewResponse } from './types/analysis'
-import type { ReviewJob } from './types/reviewJob'
-import GameReviewPage from './components/game-review/GameReviewPage'
-import PgnInput from './components/pgn/PgnInput'
-import AnalysisOverlay from './components/common/AnalysisOverlay'
 import { parseGame } from './api/games'
+import type { GameReviewResponse, GameSource } from './types/analysis'
+import type { ReviewJob } from './types/reviewJob'
+import type { ImportedGame } from './types/imports'
+import GameReviewPage from './components/game-review/GameReviewPage'
+import AnalysisPreviewPage from './components/game-review/AnalysisPreviewPage'
+import GameImport from './components/import/GameImport'
+import AnalysisOverlay from './components/common/AnalysisOverlay'
 
 import './App.css'
-import AnalysisPreviewPage from './components/game-review/AnalysisPreviewPage'
 
 const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -59,7 +60,7 @@ function App() {
     };
   }, []);
 
-  const handleReviewGame = async () => {
+  const handleReviewGame = async (reviewPgn: string, source: GameSource = "manual", external_id: string | null = null) => {
 
     pollingControllerRef.current?.abort();
     const controller = new AbortController();
@@ -71,7 +72,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const parsedGameResult = await parseGame(pgn, controller.signal);
+      const parsedGameResult = await parseGame(reviewPgn, controller.signal);
       setParsedGame(parsedGameResult);
     }
     catch (error) {
@@ -79,10 +80,12 @@ function App() {
         return;
       }
       setError("Failed to parse game");
+      setIsLoading(false);
+      return;
     }
 
     try {
-      const createdJob = await createReviewJob(pgn, 17, controller.signal);
+      const createdJob = await createReviewJob(reviewPgn, 17, source, external_id, controller.signal);
       if (createdJob.status === "completed") {
         const persistedReview =  await getPersistedReview(createdJob.job_id, controller.signal);
          if (persistedReview.result === null) {
@@ -126,7 +129,7 @@ function App() {
      }
    }
 
-    catch(error: unknown) {
+    catch(error) {
       if (error instanceof DOMException && error.name === "AbortError") {
         return;
       } 
@@ -142,10 +145,15 @@ function App() {
     finally {
       if (pollingControllerRef.current === controller) {
         pollingControllerRef.current = null;
-      }
         setIsLoading(false);
+      }     
     }
   };
+
+  const handleImportedGameSelected = async (game: ImportedGame) => {
+    setPgn(game.pgn);
+    await handleReviewGame(game.pgn, game.source, game.external_id);
+  }
 
   const completedPlies = reviewJob?.completed_plies ?? 0;
   const previewMoveIndex = completedPlies > 0 ? completedPlies - 1 : 0; 
@@ -170,14 +178,6 @@ function App() {
         isVisible={isLoading}
         reviewJob={reviewJob} />
 
-      <div className="pgn-input-container"> 
-        <PgnInput 
-          pgn={pgn} 
-          onPgnChange={setPgn} 
-          onAnalyzeGame={handleReviewGame} 
-          isLoading={isLoading} />
-      </div>
-
       {error && <p className="error-message">{error}</p>}
 
       {isLoading && parsedGame ? (
@@ -188,6 +188,17 @@ function App() {
       ) : gameReview ? (
         <GameReviewPage gameReview={gameReview} />
       ) : null}
+
+       {!isLoading ? (
+      <div className="pgn-input-container"> 
+        <GameImport 
+          pgn={pgn} 
+          onPgnChange={setPgn} 
+          onReviewPgn={() => handleReviewGame(pgn)}
+          onSelectImportedGame = {handleImportedGameSelected} 
+          isReviewLoading={isLoading} />
+      </div>
+    ) : null}
 
     </main>
   );

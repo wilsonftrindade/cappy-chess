@@ -1,6 +1,6 @@
 .pgn-input-container {
   width: min(100%, 980px);
-  margin: 0 auto 22px;
+  margin: 36px auto 22px;
   padding: 18px;
   border: 1px solid var(--border);
   border-radius: 12px;

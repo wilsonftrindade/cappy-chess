@@ -6,7 +6,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(350px, 420px);
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .board-column {
@@ -19,10 +19,10 @@
    ========================= */
 
 .review-sidebar {
-  position: sticky;
+  align-self: stretch;
+  position: static;
   top: 16px;
   display: flex;
-  height: clamp(640px, 78vh, 820px);
   min-width: 0;
   flex-direction: column;
   overflow: hidden;

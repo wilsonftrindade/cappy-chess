@@ -5,6 +5,7 @@ from app.schemas.analysis import GameSource
 
 class ImportedGame(BaseModel):
     pgn: str
+    source: GameSource
     external_id: str
     white: str
     black: str

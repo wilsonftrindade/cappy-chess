@@ -1,0 +1,160 @@
+.account-import {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.account-import label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #36312c;
+}
+
+.account-import input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 12px 14px;
+
+  background: #fbfaf8;
+  border: 1px solid #d5c9bb;
+  border-radius: 8px;
+
+  color: #25221f;
+  font-size: 1rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.account-import input:focus {
+  border-color: #b8873a;
+  box-shadow: 0 0 0 3px rgba(184, 135, 58, 0.12);
+}
+
+.account-import > button {
+  width: 100%;
+
+  padding: 13px 18px;
+
+  background: #b8873a;
+  border: none;
+  border-radius: 8px;
+
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.account-import > button:hover:not(:disabled) {
+  background: #9f712e;
+  transform: translateY(-1px);
+}
+
+.account-import > button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.import-error {
+  margin: 0;
+  padding: 10px 12px;
+
+  background: #fff0ee;
+  border: 1px solid #e6b6b0;
+  border-radius: 7px;
+
+  color: #a23c32;
+  font-size: 0.9rem;
+}
+
+.imported-games {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  margin-top: 10px;
+}
+
+.imported-game {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  padding: 14px 16px;
+
+  background: #faf8f5;
+  border: 1px solid #ded5ca;
+  border-radius: 10px;
+
+  color: #292622;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.imported-game:hover {
+  background: #f5f0e9;
+  border-color: #b8873a;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 5px 12px rgba(60, 45, 30, 0.08);
+}
+
+.imported-game__player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.imported-game__rating {
+  color: #85786b;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.imported-game__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 5px;
+  padding-top: 9px;
+
+  border-top: 1px solid #e7dfd6;
+}
+
+.imported-game__result {
+  font-weight: 700;
+  color: #403a34;
+}
+
+.imported-game__time-class {
+  padding: 3px 7px;
+
+  background: #eee8e0;
+  border-radius: 5px;
+
+  color: #72675c;
+  font-size: 0.78rem;
+  text-transform: capitalize;
+}

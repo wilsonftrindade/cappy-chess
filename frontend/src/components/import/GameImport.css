@@ -1,0 +1,60 @@
+.game-import {
+  width: min(100%, 900px);
+  margin: 0 auto;
+  padding: 28px;
+
+  background: #ffffff;
+  border: 1px solid #ddd0bf;
+  border-radius: 16px;
+
+  box-shadow: 0 8px 24px rgba(55, 45, 35, 0.08);
+}
+
+.game-import__sources {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  margin-bottom: 28px;
+}
+
+.source-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 70px;
+  padding: 16px;
+
+  background: #f8f5f0;
+  border: 1px solid #ddd4c8;
+  border-radius: 10px;
+
+  color: #2b2926;
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.source-card:hover {
+  background: #f2ece4;
+  border-color: #c7b8a4;
+  transform: translateY(-1px);
+}
+
+.source-card--active {
+  background: #f3e6cc;
+  border: 2px solid #b8873a;
+
+  color: #6f4914;
+
+  box-shadow: 0 3px 10px rgba(184, 135, 58, 0.12);
+}

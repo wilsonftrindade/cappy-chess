@@ -5,7 +5,7 @@ from app.services.imports.chess_com import fetch_chess_com_games, transform_ches
 
 router = APIRouter()
 
-@router.get("/chess-com/{username}", response_model=ImportedGamesResponse)
+@router.get("/chess-com/{username}/games", response_model=ImportedGamesResponse)
 async def get_chess_com_games(username: str, limit: int = Query(default=20, ge=1, le=50)):
     try:
       games = await fetch_chess_com_games(username, limit)
