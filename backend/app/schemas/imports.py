@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from enum import StrEnum
 
 from app.schemas.analysis import GameSource
 
@@ -19,3 +20,7 @@ class ImportedGamesResponse(BaseModel):
     username: str
     source: GameSource
     games: list[ImportedGame]
+
+class ImportedSource(StrEnum):
+    CHESS_COM = "chess-com"
+    LICHESS = "lichess"
