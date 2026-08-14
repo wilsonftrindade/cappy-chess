@@ -7,16 +7,29 @@ from app.schemas.imports import ImportedGame
 LICHESS_BASE_URL = "https://lichess.org/api"
 LICHESS_HEADERS = {"Accept": "application/x-ndjson", "User-Agent": "wilsonferreiratrindadeneto2028@u.northwestern.edu"}
 
-async def fetch_lichess_games(username: str, limit: int = 20) -> list[dict]:
+async def fetch_lichess_games(username: str, limit: int = 20, cursor: str | None = None) -> tuple[list[dict], str | None]:
+
+  params = {"max": limit + 1, "pgnInJson": True}
+
+  if cursor is not None:
+    params["until"] = int(cursor)
+          
   async with httpx.AsyncClient(
     base_url=LICHESS_BASE_URL, headers=LICHESS_HEADERS, timeout=15
     ) as client:
-    response = await client.get(f"/games/user/{username}?max={limit}&pgnInJson=true")
+    response = await client.get(f"/games/user/{username}", params=params)
     response.raise_for_status()
     data = [json.loads(line) for line in response.text.splitlines() if line.strip()]
-    return data
+
+    new_cursor = None
+    if len(data) > limit:
+      new_cursor = data[-1]["createdAt"] + 1
+      print(new_cursor)
+
+    return data[:limit], str(new_cursor)
 
 def transform_lichess_game(game: dict) -> ImportedGame:
+
   if game.get("winner") == "white":
     result = "1-0"
   elif game.get("winner") == "black":

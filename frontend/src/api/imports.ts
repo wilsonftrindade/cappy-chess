@@ -9,8 +9,15 @@ const sourcePath = {
   lichess: "lichess"
 } 
 
-export async function getImportedGames(source: GameSource, username: string, limit: number, signal?: AbortSignal): Promise<ImportedGamesResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/imports/${sourcePath[source]}/${encodeURIComponent(username)}/games?limit=${limit}`, { signal }); 
+export async function getImportedGames(source: GameSource, username: string, limit: number, cursor: string | null, signal?: AbortSignal): Promise<ImportedGamesResponse> {
+
+  const params = new URLSearchParams({ limit: limit.toString() });
+  
+  if (cursor) {
+    params.set('cursor', cursor);
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/imports/${sourcePath[source]}/${encodeURIComponent(username)}/games?${params}`, { signal }); 
 
   if (!response.ok) {
     const result = await response.json().catch(() => null);

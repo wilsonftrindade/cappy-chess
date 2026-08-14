@@ -6,7 +6,7 @@ from app.schemas.imports import ImportedGame
 CHESS_COM_BASE_URL = "https://api.chess.com/pub"
 CHESS_COM_HEADERS = {"User-Agent": "ChessCoach/1.0"}
 
-async def fetch_chess_com_games(username: str, limit: int = 20) -> list[dict]:
+async def fetch_chess_com_games(username: str, limit: int = 20, cursor: str | None = None) -> tuple[list[dict], str | None]:
 
   async with httpx.AsyncClient(
       base_url=CHESS_COM_BASE_URL, headers=CHESS_COM_HEADERS, timeout=15
@@ -20,6 +20,9 @@ async def fetch_chess_com_games(username: str, limit: int = 20) -> list[dict]:
     archives.reverse() # reverse into descending order
 
     games = []
+    before = int(cursor) if cursor is not None else None
+    new_cursor = None
+
     for archive_url in archives:
       archive_response = await client.get(archive_url)
       archive_response.raise_for_status()
@@ -28,12 +31,18 @@ async def fetch_chess_com_games(username: str, limit: int = 20) -> list[dict]:
       archive_games = archive_data.get("games", [])
       archive_games.reverse() # reverse into descending order
 
-      games.extend(archive_games)
+      eligible_games = [game for game in archive_games if before is None or game["end_time"] < before]
 
-      if len(games) >= limit:
+      games.extend(eligible_games)
+
+      if len(games) >= limit + 1:
         break
 
-    return games[:limit]
+    if len(games) > limit:
+      new_cursor = games[limit - 1]["end_time"]
+
+    return games[:limit], str(new_cursor)
+
 
 def transform_chess_com_game(game: dict) -> ImportedGame:
 

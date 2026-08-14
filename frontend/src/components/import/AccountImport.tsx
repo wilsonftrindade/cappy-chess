@@ -14,6 +14,7 @@ const AccountImport = ({ source, onSelectGame }: AccountImportProps) => {
   const [games, setGames] = useState<ImportedGame[]>([])
   const [isLoading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [nextCursor, setNextCursor] = useState<string | null>(null)
 
   const importControllerRef = useRef<AbortController | null>(null);
 
@@ -27,13 +28,14 @@ const AccountImport = ({ source, onSelectGame }: AccountImportProps) => {
     importControllerRef.current?.abort();
     const controller = new AbortController();
     importControllerRef.current = controller;
-    setGames([])
-    setError(null)
-    setLoading(true)
+    setGames([]);
+    setError(null);
+    setLoading(true);
 
     try {
-      const importedGames = await getImportedGames(source, trimmedUsername, 20, controller.signal)
+      const importedGames = await getImportedGames(source, trimmedUsername, 20, null, controller.signal)
       setGames(importedGames.games)
+      setNextCursor(importedGames.next_cursor)
     }
     catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
@@ -56,6 +58,47 @@ const AccountImport = ({ source, onSelectGame }: AccountImportProps) => {
     }
   };
 
+  const handleLoadMore = async () => {
+    if (!nextCursor) {
+      return;
+    }
+
+    importControllerRef.current?.abort();
+    const controller = new AbortController();
+    importControllerRef.current = controller;
+
+    const trimmedUsername = username.trim();
+
+    setError(null);
+    setLoading(true);
+
+    try {
+      const newImportedGames = await getImportedGames(source, trimmedUsername, 20, nextCursor, controller.signal)
+      setGames(games.concat(newImportedGames.games));
+      setNextCursor(newImportedGames.next_cursor);
+    }
+
+    catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
+      if (error instanceof Error) {
+        setError(error.message);
+      }
+
+      else {
+        setError("Failed to fetch more games");
+      }
+    }
+    finally {
+      setLoading(false)
+      if (importControllerRef.current === controller) {
+        importControllerRef.current = null;
+      }
+    }
+  };
+  
   return (
     <div className="account-import">
       <label>
@@ -126,6 +169,19 @@ const AccountImport = ({ source, onSelectGame }: AccountImportProps) => {
           </button>
         ))}
       </div>
+
+      {nextCursor && (
+        <button
+          type="button"
+          onClick={handleLoadMore}
+          disabled={isLoading}
+        >
+          {isLoading
+            ? "Loading..."
+            : "Load More"}
+        </button>
+      )}
+
     </div>
   );
 };

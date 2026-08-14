@@ -17,4 +17,5 @@ export type ImportedGamesResponse = {
   username: string;
   source: GameSource;
   games: ImportedGame[];
+  next_cursor: string | null;
 }

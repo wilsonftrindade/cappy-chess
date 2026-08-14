@@ -20,6 +20,7 @@ class ImportedGamesResponse(BaseModel):
     username: str
     source: GameSource
     games: list[ImportedGame]
+    next_cursor: str | None
 
 class ImportedSource(StrEnum):
     CHESS_COM = "chess-com"

@@ -8,19 +8,20 @@ from app.services.imports.lichess import fetch_lichess_games, transform_lichess_
 router = APIRouter()
 
 @router.get("/{source}/{username}/games", response_model=ImportedGamesResponse)
-async def get_imported_games(source: ImportedSource, username: str, limit: int = Query(default=20, ge=1, le=50)):
+async def get_imported_games(source: ImportedSource, username: str, limit: int = Query(default=20, ge=1, le=50), cursor: str | None = None):
+	
 	try: 
 		if (source == "chess-com"):
-			games = await fetch_chess_com_games(username, limit)
+			games, new_cursor = await fetch_chess_com_games(username, limit, cursor)
 			game_responses = [transform_chess_com_game(game) for game in games]
 			game_source = "chess_com"
 
 		elif (source == "lichess"):
-			games = await fetch_lichess_games(username, limit)
+			games, new_cursor = await fetch_lichess_games(username, limit, cursor)
 			game_responses = [transform_lichess_game(game) for game in games]
 			game_source = "lichess"
 
-		return ImportedGamesResponse(username=username, source=game_source, games=game_responses)
+		return ImportedGamesResponse(username=username, source=game_source, games=game_responses, next_cursor=new_cursor)
 
 	except httpx.HTTPStatusError as exc:
 		if source == "chess-com":
