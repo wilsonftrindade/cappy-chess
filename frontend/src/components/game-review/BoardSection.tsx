@@ -35,9 +35,10 @@ const BoardSection = ( { gameReview, boardPosition, onPreviousMove, onNextMove, 
         onNextMove={onNextMove}
         selectedMoveIndex={selectedMoveIndex}
         totalMoves={gameReview.reviewed_moves.length}
-        whiteWinProbability={whiteWinProbability}
-        evaluationCp={evaluationCp}
-        mateIn={mateIn}
+        evaluation = {{
+          whiteWinProbability,
+          evaluationCp,
+          mateIn}}
       />
 
       <PlayerInfo
