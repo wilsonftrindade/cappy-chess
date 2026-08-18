@@ -60,6 +60,10 @@ const GameReviewPage = ({ gameReview }: GameReviewProps) => {
   const selectedMove = selectedMoveIndex !== null ? gameReview.reviewed_moves[selectedMoveIndex] : null;
   const initialPosition = gameReview.reviewed_moves[0]?.fen_before ?? STARTING_FEN;
   const boardPosition = selectedMove ? selectedMove.fen_after : initialPosition;
+  const currentWinProbability = (selectedMove ? selectedMove.win_probability_after : 0.5) ?? 0.5;
+  const whiteWinProbability = (selectedMove?.color === "white" ? currentWinProbability : 1 - currentWinProbability) ?? 0.5;
+  const currentEvalCp =  (selectedMove ? selectedMove.eval_cp_after : 0.0) ?? 0.0;
+  const currentMateIn = selectedMove ? selectedMove.mate_in_after : null
 
   return (
     <div className="game-review-page">
@@ -70,6 +74,9 @@ const GameReviewPage = ({ gameReview }: GameReviewProps) => {
           onPreviousMove={handlePreviousMove}
           onNextMove={handleNextMove}
           selectedMoveIndex={selectedMoveIndex}
+          whiteWinProbability={whiteWinProbability}
+          evaluationCp={currentEvalCp}
+          mateIn={currentMateIn}
         />
       </div>
 

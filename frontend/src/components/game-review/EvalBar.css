@@ -1,0 +1,47 @@
+.eval-bar {
+  position: relative;
+
+  width: 30px;
+
+  flex: 0 0 28px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  background: #f7f4ef;
+}
+
+.eval-bar-black {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+
+  background: #2f2a25;
+
+  transition: height 180ms ease;
+}
+
+.eval-bar-label {
+  position: absolute;
+  left: 50%;
+  z-index: 2;
+
+  transform: translateX(-50%);
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.eval-bar-label--white {
+  bottom: 8px;
+  color: #2f2a25;
+}
+
+.eval-bar-label--black {
+  top: 8px;
+  color: white;
+}

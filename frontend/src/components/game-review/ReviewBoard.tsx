@@ -1,20 +1,32 @@
 import { Chessboard } from 'react-chessboard';
+import EvalBar from "./EvalBar";
 
 type ReviewBoardProps = {
-   boardOptions: any;
-   onPreviousMove: () => void;
-   onNextMove: () => void;
-   selectedMoveIndex: number | null;
-   totalMoves: number;
+  boardOptions: any;
+  onPreviousMove: () => void;
+  onNextMove: () => void;
+  selectedMoveIndex: number | null;
+  totalMoves: number;
+  whiteWinProbability: number;
+  evaluationCp: number;
+  mateIn: number | null;
 };
 
-const ReviewBoard = ( { boardOptions, onPreviousMove, onNextMove, selectedMoveIndex, totalMoves }: ReviewBoardProps ) => {
+const ReviewBoard = ( { boardOptions, onPreviousMove, onNextMove, selectedMoveIndex, totalMoves, whiteWinProbability, evaluationCp, mateIn }: ReviewBoardProps ) => {
   return (
     <section className="review-board">
       <h3>Chessboard</h3>
 
-      <div className="board-container">
-        <Chessboard options={boardOptions} />
+      <div className="board-with-eval">
+        <EvalBar
+          whiteWinProbability={whiteWinProbability}
+          evaluationCp={evaluationCp}
+          mateIn={mateIn}
+        />
+
+        <div className="board-container">
+          <Chessboard options={boardOptions} />
+        </div>
       </div>
 
       <div className="board-controls">

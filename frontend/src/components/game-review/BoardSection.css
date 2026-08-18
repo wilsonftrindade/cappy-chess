@@ -83,6 +83,12 @@
   display: none;
 }
 
+.board-with-eval {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
 /* Supports either the new or previous inner wrapper class name. */
 .board-container {
   width: 100%;

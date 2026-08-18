@@ -9,9 +9,12 @@ type BoardSectionProps = {
   onPreviousMove: () => void;
   onNextMove: () => void;
   selectedMoveIndex: number | null;
+  whiteWinProbability: number;
+  evaluationCp: number;
+  mateIn: number | null;
 }
 
-const BoardSection = ( { gameReview, boardPosition, onPreviousMove, onNextMove, selectedMoveIndex } : BoardSectionProps)  => {
+const BoardSection = ( { gameReview, boardPosition, onPreviousMove, onNextMove, selectedMoveIndex, whiteWinProbability, evaluationCp, mateIn } : BoardSectionProps)  => {
 
   const boardOptions = {
     position: boardPosition,
@@ -32,6 +35,9 @@ const BoardSection = ( { gameReview, boardPosition, onPreviousMove, onNextMove, 
         onNextMove={onNextMove}
         selectedMoveIndex={selectedMoveIndex}
         totalMoves={gameReview.reviewed_moves.length}
+        whiteWinProbability={whiteWinProbability}
+        evaluationCp={evaluationCp}
+        mateIn={mateIn}
       />
 
       <PlayerInfo
