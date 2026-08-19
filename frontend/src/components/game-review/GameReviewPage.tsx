@@ -5,6 +5,7 @@ import type { GameReviewResponse } from "../../types/analysis";
 import BoardSection from "./BoardSection";
 import GameSummaryPanel from "./GameSummaryPanel";
 import ActiveReviewPanel from './ActiveReviewPanel';
+import EvalGraph from './EvalGraph'
 
 const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -100,6 +101,13 @@ const GameReviewPage = ({ gameReview }: GameReviewProps) => {
           />
         )}
       </aside>
+
+      <div className= "eval-graph-container">
+        <EvalGraph
+          reviewedMoves={gameReview.reviewed_moves}
+          onSelectMove={handleSelectMove}
+        />
+      </div>
 
     </div>
   )
