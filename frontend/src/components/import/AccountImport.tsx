@@ -101,13 +101,14 @@ const AccountImport = ({ source, onSelectGame }: AccountImportProps) => {
   
   return (
     <div className="account-import">
-      <label>
+      <label htmlFor="account-username">
         {source === "chess_com"
           ? "Chess.com username"
           : "Lichess username"}
       </label>
 
       <input
+        id="account-username"
         value={username}
         onChange={(event) =>
           setUsername(event.target.value)

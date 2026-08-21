@@ -23,8 +23,8 @@ function AnalysisPreviewPage({
   };
 
   return (
-    <div className="game-review-page">
-      <div className="board-container">
+    <div className="game-review-page game-review-page--preview">
+      <div className="board-column">
         <section className="board-section">
           <PlayerInfo
             name={parsedGame.black}
@@ -50,14 +50,21 @@ function AnalysisPreviewPage({
 
       <aside className="review-sidebar">
         <header className="review-sidebar-header">
-          <h2>Game Review</h2>
+          <span className="review-brand-mark" aria-hidden="true">♞</span>
+
+          <div>
+            <h2>Chess Coach</h2>
+            <p>Building your move-by-move review.</p>
+          </div>
         </header>
 
-        <MoveList
-          moves={displayMoves}
-          selectedMoveIndex={currentMoveIndex}
-          onSelectMove={() => {}}
-        />
+        <section className="active-review-panel preview-review-panel">
+          <MoveList
+            moves={displayMoves}
+            selectedMoveIndex={currentMoveIndex}
+            onSelectMove={() => {}}
+          />
+        </section>
       </aside>
     </div>
   );

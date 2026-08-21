@@ -170,8 +170,17 @@ function App() {
   return (
     <main className="app">
       <header className="app-header">
-        <h1>AI Chess Coach</h1>
-        <p>Backend status: {backendStatus}</p>
+        <div className="app-brand">
+          <span className="app-brand-mark" aria-hidden="true">♞</span>
+
+          <div className="app-brand-copy">
+            <h1>Chess Coach</h1>
+          </div>
+        </div>
+
+        <p className={`app-status app-status--${backendStatus === "error" ? "error" : backendStatus === "checking..." ? "checking" : "ready"}`}>
+          Backend: {backendStatus}
+        </p>
       </header>
 
       <AnalysisOverlay

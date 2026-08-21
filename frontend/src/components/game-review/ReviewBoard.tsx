@@ -38,11 +38,11 @@ const ReviewBoard = ( { boardOptions, onPreviousMove, onNextMove, selectedMoveIn
 
       <div className="board-controls">
         <button onClick={onPreviousMove} disabled={selectedMoveIndex == null}>
-        Previous
+          <span aria-hidden="true">←</span> Previous
         </button>
 
         <button onClick={onNextMove} disabled={selectedMoveIndex === totalMoves - 1}>
-        Next
+          Next <span aria-hidden="true">→</span>
         </button>
       </div>
     </section>

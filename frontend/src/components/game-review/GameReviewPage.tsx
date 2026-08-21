@@ -83,8 +83,25 @@ const GameReviewPage = ({ gameReview }: GameReviewProps) => {
 
       <aside className="review-sidebar">
         <header className="review-sidebar-header">
-            <h2>Game Review</h2>
+          <span className="review-brand-mark" aria-hidden="true">♞</span>
+
+          <div>
+            <h2>Chess Coach</h2>
+            <p>Let&apos;s find the moments that shaped this game.</p>
+          </div>
         </header>
+
+        <div className="eval-graph-container">
+          <div className="eval-graph-heading">
+            <strong>Game momentum</strong>
+            <span>Select a point to visit that move</span>
+          </div>
+
+          <EvalGraph
+            reviewedMoves={gameReview.reviewed_moves}
+            onSelectMove={handleSelectMove}
+          />
+        </div>
 
         {reviewMode === "summary" ? (
           <GameSummaryPanel
@@ -101,13 +118,6 @@ const GameReviewPage = ({ gameReview }: GameReviewProps) => {
           />
         )}
       </aside>
-
-      <div className= "eval-graph-container">
-        <EvalGraph
-          reviewedMoves={gameReview.reviewed_moves}
-          onSelectMove={handleSelectMove}
-        />
-      </div>
 
     </div>
   )

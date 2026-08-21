@@ -9,8 +9,9 @@ type PgnInputProps = {
 
 const PgnInput = ( { isLoading, onPgnChange, onReviewGame, pgn }: PgnInputProps) => {
     return (
-        <>
-        <h2>Paste PGN</h2>
+      <section className="pgn-input">
+        <h2>Paste a PGN</h2>
+        <p className="pgn-input__hint">Use a complete game exported from your chess platform.</p>
 
         <textarea className="pgn-textarea"
           value={pgn}
@@ -20,12 +21,10 @@ const PgnInput = ( { isLoading, onPgnChange, onReviewGame, pgn }: PgnInputProps)
           placeholder="Paste a PGN here..."
         />
 
-        <br />
-
         <button className="parse-button" onClick={onReviewGame} disabled={isLoading || !pgn.trim()}>
           {isLoading ? "Reviewing Game..." : "Review Game"}
         </button>
-        </>
+      </section>
     );
 };
 

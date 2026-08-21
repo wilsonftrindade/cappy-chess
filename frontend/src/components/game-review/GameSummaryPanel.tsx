@@ -1,4 +1,5 @@
 import type { GameReviewResponse } from "../../types/analysis";
+import { getClassificationDetails } from "../../utils/moveClassifications";
 
 const CLASSIFICATIONS = [
   "Best",
@@ -29,11 +30,12 @@ const GameSummaryPanel = ( { gameReview, onStartReview }: GameSummaryPanelProps 
   return (
     <section className="game-summary-panel">
       <header className="game-summary-header">
-        <h2>Game Summary</h2>
+        <div>
+          <h2>Game summary</h2>
+          <p>{gameReview.white} vs {gameReview.black}</p>
+        </div>
 
-        <p> {gameReview.white} vs {gameReview.black}</p>
-
-        <p>Result: {gameReview.result}</p>
+        <span className="game-result">{gameReview.result}</span>
       </header>
 
       <div className="accuracy-summary">
@@ -55,21 +57,38 @@ const GameSummaryPanel = ( { gameReview, onStartReview }: GameSummaryPanelProps 
       </div>
 
       <div className="classification-summary">
-          {CLASSIFICATIONS.map((classification) => (
-          <div className="classification-row" key={classification}>
-            <span>
-              {gameReview.white_summary
-                .classification_counts[classification] ?? 0}
-            </span>
+        {CLASSIFICATIONS.map((classification) => {
+          const details = getClassificationDetails(classification);
 
-            <strong>{classification}</strong>
+          return (
+            <div
+              className={`classification-row move-tier--${details?.slug ?? "neutral"}`}
+              key={classification}
+            >
+              <span>
+                {gameReview.white_summary
+                  .classification_counts[classification] ?? 0}
+              </span>
 
-            <span>
-              {gameReview.black_summary
-                .classification_counts[classification] ?? 0}
-            </span>
-          </div>
-        ))}
+              <strong className="classification-label">
+                {details ? (
+                  <span
+                    className="classification-icon"
+                    style={{ backgroundImage: `url(${details.icon})` }}
+                    aria-hidden="true"
+                  />
+                ) : null}
+
+                <span>{classification}</span>
+              </strong>
+
+              <span>
+                {gameReview.black_summary
+                  .classification_counts[classification] ?? 0}
+              </span>
+            </div>
+          );
+        })}
       </div>
 
       <button className="start-review-button" onClick={onStartReview} disabled={gameReview.reviewed_moves.length === 0}>

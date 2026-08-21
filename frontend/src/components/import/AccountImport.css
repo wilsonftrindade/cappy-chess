@@ -1,160 +1,160 @@
 .account-import {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .account-import label {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #36312c;
+  color: var(--text-strong);
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .account-import input {
   width: 100%;
-  box-sizing: border-box;
-
   padding: 12px 14px;
-
-  background: #fbfaf8;
-  border: 1px solid #d5c9bb;
-  border-radius: 8px;
-
-  color: #25221f;
-  font-size: 1rem;
-
-  outline: none;
-
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 15px;
   transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background 140ms ease;
+}
+
+.account-import input::placeholder {
+  color: var(--text-light);
 }
 
 .account-import input:focus {
-  border-color: #b8873a;
-  box-shadow: 0 0 0 3px rgba(184, 135, 58, 0.12);
+  border-color: var(--accent);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(149, 102, 63, 0.14);
 }
 
 .account-import > button {
   width: 100%;
-
-  padding: 13px 18px;
-
-  background: #b8873a;
-  border: none;
-  border-radius: 8px;
-
+  min-height: 48px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--accent);
   color: white;
-  font-size: 1rem;
-  font-weight: 600;
-
+  font-weight: 750;
   cursor: pointer;
-
   transition:
-    background-color 0.15s ease,
-    transform 0.15s ease;
+    background-color 140ms ease,
+    transform 100ms ease,
+    box-shadow 140ms ease;
 }
 
 .account-import > button:hover:not(:disabled) {
-  background: #9f712e;
-  transform: translateY(-1px);
+  background: var(--accent-hover);
+  box-shadow: var(--shadow-small);
+}
+
+.account-import > button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .account-import > button:disabled {
-  opacity: 0.55;
+  opacity: 0.48;
   cursor: not-allowed;
 }
 
 .import-error {
   margin: 0;
   padding: 10px 12px;
-
-  background: #fff0ee;
   border: 1px solid #e6b6b0;
-  border-radius: 7px;
-
-  color: #a23c32;
-  font-size: 0.9rem;
+  border-radius: 8px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 13px;
 }
 
 .imported-games {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 .imported-game {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: 7px;
-
-  padding: 14px 16px;
-
-  background: #faf8f5;
-  border: 1px solid #ded5ca;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
   border-radius: 10px;
-
-  color: #292622;
+  background: var(--surface-soft);
+  color: var(--text);
   text-align: left;
-
   cursor: pointer;
-
   transition:
-    border-color 0.15s ease,
-    background-color 0.15s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+    border-color 140ms ease,
+    background-color 140ms ease,
+    transform 100ms ease,
+    box-shadow 140ms ease;
 }
 
 .imported-game:hover {
-  background: #f5f0e9;
-  border-color: #b8873a;
-
-  transform: translateY(-2px);
-
-  box-shadow: 0 5px 12px rgba(60, 45, 30, 0.08);
+  border-color: var(--accent);
+  background: var(--accent-faint);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-small);
 }
 
 .imported-game__player {
   display: flex;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 650;
+}
 
-  font-size: 0.95rem;
-  font-weight: 500;
+.imported-game__player > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .imported-game__rating {
-  color: #85786b;
-  font-size: 0.85rem;
-  font-weight: 500;
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 550;
 }
 
 .imported-game__footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-
-  margin-top: 5px;
-  padding-top: 9px;
-
-  border-top: 1px solid #e7dfd6;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
 }
 
 .imported-game__result {
-  font-weight: 700;
-  color: #403a34;
+  color: var(--text-strong);
+  font-weight: 800;
 }
 
 .imported-game__time-class {
   padding: 3px 7px;
-
-  background: #eee8e0;
-  border-radius: 5px;
-
-  color: #72675c;
-  font-size: 0.78rem;
+  border-radius: 999px;
+  background: var(--surface-brown);
+  color: var(--text-muted);
+  font-size: 11px;
   text-transform: capitalize;
+}
+
+@media (max-width: 560px) {
+  .imported-games {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,4 +1,5 @@
 import type { ReviewedMove } from "../../types/analysis";
+import { getClassificationDetails } from "../../utils/moveClassifications";
 
 type CurrentMovePanelProps = {
     move: ReviewedMove;
@@ -24,12 +25,34 @@ function formatEvaluation(evaluation: number | null, mate_in: number | null): st
 };
 
 const CurrentMovePanel = ( { move }: CurrentMovePanelProps ) => {
+  const playedMoveDetails = getClassificationDetails(move.classification);
+  const bestMoveDetails = getClassificationDetails("Best");
+
   return (
     <section className="current-move-panel">
       <div className="played-move-review">
-        <div>
-          <strong> {move.move_san ?? move.move_uci} </strong> {" "} 
-          is {move.classification?.toLowerCase() ?? "unclassified"}
+        <div className={`move-review-label move-tier--${playedMoveDetails?.slug ?? "neutral"}`}>
+          {playedMoveDetails ? (
+            <span
+              className="classification-icon"
+              style={{ backgroundImage: `url(${playedMoveDetails.icon})` }}
+              aria-hidden="true"
+            />
+          ) : null}
+
+          <span>
+            <strong>{move.move_san ?? move.move_uci}</strong>{" "}
+            is{" "} 
+            {move.classification?.toLowerCase() === "inaccuracy"
+              ? "an "
+              : ["mistake", "blunder"].includes(
+                  move.classification?.toLowerCase() ?? ""
+                )
+                ? "a "
+                : ""}
+            {move.classification?.toLowerCase() ?? "unclassified"}
+          </span>
+          
         </div>
 
         <span className="evaluation-badge">
@@ -39,37 +62,30 @@ const CurrentMovePanel = ( { move }: CurrentMovePanelProps ) => {
 
       {(move.classification !== "Best") ? (
         <div className="best-move-review">
-        <div>
-          <strong>{move.best_move_san ?? "No best move"}</strong>{" "}
-          was best
-        </div>
+          <div className="move-review-label move-tier--best">
+            {bestMoveDetails ? (
+              <span
+                className="classification-icon"
+                style={{ backgroundImage: `url(${bestMoveDetails.icon})` }}
+                aria-hidden="true"
+              />
+            ) : null}
 
-        <span className="evaluation-badge">
-          {formatEvaluation(
-            move.eval_cp_before,
-            move.mate_in_before
-          )}
-        </span>
-      </div>
+            <span>
+              <strong>{move.best_move_san ?? "No best move"}</strong>{" "}
+              was best
+            </span>
+          </div>
+
+          <span className="evaluation-badge">
+            {formatEvaluation(
+              move.eval_cp_before,
+              move.mate_in_before
+            )}
+          </span>
+        </div>
       ) : null}
 
-      <div className="move-review-details">
-        <p>
-          <strong>Move accuracy:</strong>{" "}
-          {move.move_accuracy !== null
-            ? `${move.move_accuracy.toFixed(1)}%`
-            : "N/A"}
-        </p>
-
-        <p>
-          <strong>Win probability loss:</strong>{" "}
-          {move.win_probability_loss !== null
-            ? `${(
-                move.win_probability_loss * 100
-              ).toFixed(2)}%`
-            : "N/A"}
-        </p>
-      </div>
   </section>
   );
 };

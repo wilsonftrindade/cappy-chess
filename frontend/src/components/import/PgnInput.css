@@ -1,32 +1,27 @@
-.pgn-input-container {
-  width: min(100%, 980px);
-  margin: 36px auto 22px;
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-  box-shadow: var(--shadow-small);
+.pgn-input h2 {
+  margin: 0 0 5px;
+  color: var(--text-strong);
+  font-size: 17px;
 }
 
-.pgn-input-container h2 {
+.pgn-input__hint {
   margin: 0 0 12px;
-  color: var(--text);
-  font-size: 20px;
+  color: var(--text-muted);
+  font-size: 13px;
 }
 
 .pgn-textarea {
   width: 100%;
-  min-height: 130px;
+  min-height: 170px;
   resize: vertical;
   padding: 13px 14px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  outline: none;
+  border-radius: 9px;
   background: var(--surface-soft);
   color: var(--text);
   font-family: "Courier New", monospace;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.55;
   transition:
     border-color 140ms ease,
     box-shadow 140ms ease,
@@ -40,27 +35,29 @@
 .pgn-textarea:focus {
   border-color: var(--accent);
   background: white;
-  box-shadow: 0 0 0 3px rgba(143, 104, 72, 0.14);
+  box-shadow: 0 0 0 3px rgba(149, 102, 63, 0.14);
 }
 
 .parse-button {
+  width: 100%;
+  min-height: 48px;
   margin-top: 12px;
   padding: 10px 18px;
   border: 1px solid var(--accent);
-  border-radius: 8px;
-  background: white;
-  color: var(--accent);
+  border-radius: 9px;
+  background: var(--accent);
+  color: white;
   font-weight: 750;
   cursor: pointer;
   transition:
     background 140ms ease,
-    color 140ms ease,
-    transform 100ms ease;
+    transform 100ms ease,
+    box-shadow 140ms ease;
 }
 
 .parse-button:hover:not(:disabled) {
-  background: var(--accent);
-  color: white;
+  background: var(--accent-hover);
+  box-shadow: var(--shadow-small);
 }
 
 .parse-button:active:not(:disabled) {
@@ -68,16 +65,6 @@
 }
 
 .parse-button:disabled {
-  opacity: 0.5;
+  opacity: 0.48;
   cursor: not-allowed;
-}
-
-.error-message {
-  width: min(100%, 980px);
-  margin: 0 auto 20px;
-  padding: 11px 13px;
-  border: 1px solid #e5b8b4;
-  border-radius: 8px;
-  background: var(--danger-bg);
-  color: var(--danger);
 }
