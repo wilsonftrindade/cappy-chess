@@ -54,7 +54,13 @@ def compute_player_accuracy(reviewed_moves: list[ReviewedMove], color: str) -> f
         if move.color == color:
             accuracy_and_weights.append(accuracy_and_weight)
 
-    return combine_means(accuracy_and_weights)
+    mistake_accuracy = power_loss_accuracy(accuracy_and_weights, 2)
+
+    base_accuracy = weighted_mean([(move.move_accuracy, severity_weight(move.move_accuracy)) for move in player_moves])
+
+    final_accuracy = 0.5 * base_accuracy + 0.5 * mistake_accuracy
+
+    return final_accuracy
 
 def calculate_volatility_weights(win_probabilities: list[float], number_of_plies: int) -> list[float]:
 
@@ -76,9 +82,15 @@ def calculate_volatility_weights(win_probabilities: list[float], number_of_plies
 
     weights = []
 
+    # for window in windows:
+    #     volatility = pstdev(window)
+    #     weight = max(0.5, min(volatility, 12)) 
+    #     weights.append(weight)
+
     for window in windows:
         volatility = pstdev(window)
-        weight = max(0.5, min(volatility, 12))
+        normalized_vol = min(volatility, 12) /12
+        weight = 1 + 0.5 * normalized_vol
         weights.append(weight)
     
     return weights
@@ -126,6 +138,33 @@ def count_player_classsifications(player_moves: list[ReviewedMove]) -> dict[str,
         count[move.classification] += 1
 
     return count
+
+def power_loss_accuracy(
+    values_and_weights: list[tuple[float, float]],
+    power: float,
+) -> float | None:
+    # V2 accuracy logic, using  only a non-linear aggregate loss score
+    if not values_and_weights:
+        return None
+
+    total_weight = sum(weight for _, weight in values_and_weights)
+
+    total_power_loss = (sum(weight * ((100 - accuracy) ** power) for accuracy, weight in values_and_weights))
+
+    mean_power_loss = total_power_loss / total_weight
+
+    aggregate_loss = mean_power_loss ** (1 / power)
+
+    return round(100 - aggregate_loss, 2)
+
+
+def severity_weight(accuracy):
+    # weights from 0.
+    loss_ratio = (100 - accuracy) / 100
+
+    severity_weight = 0.75 + 1.25 * loss_ratio ** 1.5
+
+    return severity_weight
 
 
 

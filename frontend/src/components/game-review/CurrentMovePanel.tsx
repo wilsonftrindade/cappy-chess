@@ -52,7 +52,7 @@ const CurrentMovePanel = ( { move }: CurrentMovePanelProps ) => {
                 : ""}
             {move.classification?.toLowerCase() ?? "unclassified"}
           </span>
-          
+
         </div>
 
         <span className="evaluation-badge">
@@ -86,6 +86,24 @@ const CurrentMovePanel = ( { move }: CurrentMovePanelProps ) => {
         </div>
       ) : null}
 
+     <div className="move-review-details">
+        <p>
+          <strong>Move accuracy:</strong>{" "}
+          {move.move_accuracy !== null
+            ? `${move.move_accuracy.toFixed(1)}%`
+            : "N/A"}
+        </p>
+
+          <p>
+          <strong>Win probability loss:</strong>{" "}
+          {move.win_probability_loss !== null
+            ? `${(
+                move.win_probability_loss * 100
+              ).toFixed(2)}%`
+            : "N/A"}
+        </p>
+      </div>
+      
   </section>
   );
 };
