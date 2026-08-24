@@ -4,6 +4,7 @@ from app.schemas.analysis import GameReviewResponse, ReviewedMove
 from .pgn_parser import parse_pgn
 from .engine import start_stockfish, analyze_board, create_and_validate_board, build_move_review
 from .summary import build_player_summary
+from .opening_book_service import create_client, is_book_move
 
 ProgressCallback = Callable[[int, int], None]
 
@@ -42,45 +43,54 @@ def review_game(pgn: str, depth: int, progress_callback: ProgressCallback | None
     engine = start_stockfish()
     try: 
         analysis_before = analyze_board(board_before, engine, depth)
+        in_book = True
 
-        for completed_plies, parsed_move in enumerate(parsed_game.moves, start=1):
-            fen_after = parsed_move.fen_after
-            board_after = create_and_validate_board(fen_after)
-            analysis_after = analyze_board(board_after, engine, depth)
+        with create_client() as client:
+            for completed_plies, parsed_move in enumerate(parsed_game.moves, start=1):
+                fen_before = parsed_move.fen_before
+                fen_after = parsed_move.fen_after
+                board_after = create_and_validate_board(fen_after)
+                analysis_after = analyze_board(board_after, engine, depth)
 
-            move_uci = parsed_move.move_uci
-            move_san = parsed_move.move_san
-            is_white = parsed_move.color == "white"
+                move_uci = parsed_move.move_uci
+                move_san = parsed_move.move_san
+                is_white = parsed_move.color == "white"
 
-            move_review = build_move_review(move_uci, move_san, analysis_before, analysis_after, is_white)
+                move_review = build_move_review(move_uci, move_san, analysis_before, analysis_after, is_white)
 
-            reviewed_move = ReviewedMove(
-                move_number=parsed_move.move_number,
-                color=parsed_move.color,
-                fen_after=fen_after,
-                **move_review.model_dump()
+                reviewed_move = ReviewedMove(
+                    move_number=parsed_move.move_number,
+                    color=parsed_move.color,
+                    fen_after=fen_after,
+                    **move_review.model_dump()
+                )
+
+                if in_book:
+                    in_book = is_book_move(client=client, fen_before=fen_before, move_uci=move_uci)
+
+                if in_book:
+                    reviewed_move.classification = "Book"
+
+                reviewed_moves.append(reviewed_move)
+
+                analysis_before = analysis_after
+
+                if progress_callback is not None:
+                    progress_callback(completed_plies, total_plies)
+            
+            white_summary = build_player_summary(reviewed_moves, "white")
+            black_summary = build_player_summary(reviewed_moves, "black")
+
+            return GameReviewResponse(
+                white=parsed_game.white,
+                black=parsed_game.black,
+                result=parsed_game.result,
+                white_elo=parsed_game.white_elo,
+                black_elo=parsed_game.black_elo,
+                reviewed_moves=reviewed_moves,
+                white_summary=white_summary,
+                black_summary=black_summary
             )
-
-            reviewed_moves.append(reviewed_move)
-
-            analysis_before = analysis_after
-
-            if progress_callback is not None:
-                progress_callback(completed_plies, total_plies)
-        
-        white_summary = build_player_summary(reviewed_moves, "white")
-        black_summary = build_player_summary(reviewed_moves, "black")
-
-        return GameReviewResponse(
-            white=parsed_game.white,
-            black=parsed_game.black,
-            result=parsed_game.result,
-            white_elo=parsed_game.white_elo,
-            black_elo=parsed_game.black_elo,
-            reviewed_moves=reviewed_moves,
-            white_summary=white_summary,
-            black_summary=black_summary
-        )
     finally:
         engine.quit()
 

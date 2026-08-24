@@ -51,6 +51,7 @@ const CurrentMovePanel = ( { move }: CurrentMovePanelProps ) => {
                 ? "a "
                 : ""}
             {move.classification?.toLowerCase() ?? "unclassified"}
+            {move.classification?.toLowerCase() === "book" ? " move" : ""}
           </span>
 
         </div>

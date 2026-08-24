@@ -139,6 +139,10 @@
   background-size: 166%;
 }
 
+.move-tier--book {
+  --move-tier-color: #B3864F;
+}
+
 .move-tier--best {
   --move-tier-color: #68a33b;
 }

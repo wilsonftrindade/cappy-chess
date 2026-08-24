@@ -20,13 +20,17 @@ def build_player_summary(reviewed_moves: list[ReviewedMove], color: str) -> Play
 def compute_player_accuracy(reviewed_moves: list[ReviewedMove], color: str) -> float:
     if not reviewed_moves:
         return None
-    
-    player_moves = [move for move in reviewed_moves if move.color == color]
 
-    if any(move.move_accuracy is None for move in player_moves):
+    non_book_reviewed_moves = [move for move in reviewed_moves if move.classification != "Book"]
+    non_book_player_moves = [move for move in non_book_reviewed_moves if move.color == color]
+
+    if not non_book_player_moves:
+        return None
+
+    if any(move.move_accuracy is None for move in non_book_player_moves):
         raise ValueError(f"Missing move accuracy for {color}")
     
-    first_move = reviewed_moves[0]
+    first_move = non_book_reviewed_moves[0]
 
     initial_white_win_probability = player_win_probability(first_move.eval_cp_before, first_move.mate_in_before, is_white=True,)
 
@@ -35,17 +39,17 @@ def compute_player_accuracy(reviewed_moves: list[ReviewedMove], color: str) -> f
 
     white_win_probabilities = [initial_white_win_probability]
 
-    for move in reviewed_moves:
+    for move in non_book_reviewed_moves:
         win_probability_after = player_win_probability(move.eval_cp_after, move.mate_in_after, is_white=True)
         white_win_probabilities.append(win_probability_after)
 
     if any(probability is None for probability in white_win_probabilities):
         raise ValueError(f"Missing win probability for {color}")
 
-    weights = calculate_volatility_weights(white_win_probabilities, len(reviewed_moves))
+    weights = calculate_volatility_weights(white_win_probabilities, len(non_book_reviewed_moves))
     accuracy_and_weights = []
 
-    for move, weight in zip(reviewed_moves, weights):
+    for move, weight in zip(non_book_reviewed_moves, weights):
         accuracy_and_weight = (
             move.move_accuracy,
             weight,
@@ -56,11 +60,11 @@ def compute_player_accuracy(reviewed_moves: list[ReviewedMove], color: str) -> f
 
     mistake_accuracy = power_loss_accuracy(accuracy_and_weights, 2)
 
-    base_accuracy = weighted_mean([(move.move_accuracy, severity_weight(move.move_accuracy)) for move in player_moves])
+    base_accuracy = weighted_mean([(move.move_accuracy, severity_weight(move.move_accuracy)) for move in non_book_player_moves])
 
     final_accuracy = 0.5 * base_accuracy + 0.5 * mistake_accuracy
 
-    return final_accuracy
+    return round(final_accuracy, 2)
 
 def calculate_volatility_weights(win_probabilities: list[float], number_of_plies: int) -> list[float]:
 
@@ -106,44 +110,10 @@ def weighted_mean(values_and_weights: list[tuple[float, float]]) -> float | None
     weighted_sum = sum(value * weight for value, weight in values_and_weights)
     return weighted_sum / total_weight
 
-def harmonic_mean(values: list[float]) -> float | None:
-    if not values:
-        return None
-    
-    if any(value <= 0 for value in values):
-        return 0.0
-    
-    return len(values) / sum(1 / value for value in values)
-
-
-def combine_means(values_and_weights: list[tuple[float, float]]) -> float | None:
-    values = [value for value, _ in values_and_weights]
-
-    volatility_weighted_mean = weighted_mean(values_and_weights)
-    harmonic_mean_result = harmonic_mean(values)
-
-    if (volatility_weighted_mean is None or harmonic_mean_result is None):
-        return None
-
-    game_accuracy = (volatility_weighted_mean + harmonic_mean_result) / 2
-
-    return round(game_accuracy, 2)
-
-    
-def count_player_classsifications(player_moves: list[ReviewedMove]) -> dict[str, int]:
-    classifications = ["Best", "Excellent", "Good", "Inaccuracy", "Mistake", "Blunder"]
-    count = {classification: 0 for classification in classifications}
-
-    for move in player_moves:
-        count[move.classification] += 1
-
-    return count
-
 def power_loss_accuracy(
     values_and_weights: list[tuple[float, float]],
     power: float,
 ) -> float | None:
-    # V2 accuracy logic, using  only a non-linear aggregate loss score
     if not values_and_weights:
         return None
 
@@ -155,18 +125,25 @@ def power_loss_accuracy(
 
     aggregate_loss = mean_power_loss ** (1 / power)
 
-    return round(100 - aggregate_loss, 2)
+    return 100 - aggregate_loss
 
 
 def severity_weight(accuracy):
-    # weights from 0.
+    # gives lower-accuracy moves more influence on base game accuracy.
     loss_ratio = (100 - accuracy) / 100
 
     severity_weight = 0.75 + 1.25 * loss_ratio ** 1.5
 
     return severity_weight
 
+def count_player_classsifications(player_moves: list[ReviewedMove]) -> dict[str, int]:
+    classifications = ["Book", "Best", "Excellent", "Good", "Inaccuracy", "Mistake", "Blunder"]
+    count = {classification: 0 for classification in classifications}
 
+    for move in player_moves:
+        count[move.classification] += 1
+
+    return count
 
 
     

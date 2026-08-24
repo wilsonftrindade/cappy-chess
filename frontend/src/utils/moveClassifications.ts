@@ -4,6 +4,7 @@ import excellentMoveIcon from "../assets/move-classifications/excellent-move.png
 import goodMoveIcon from "../assets/move-classifications/good-move.png";
 import inaccuracyIcon from "../assets/move-classifications/inaccuracy.png";
 import mistakeIcon from "../assets/move-classifications/mistake.png";
+import bookIcon from "../assets/move-classifications/book-move.png"
 
 type ClassificationDetails = {
   icon: string;
@@ -11,6 +12,10 @@ type ClassificationDetails = {
 };
 
 const CLASSIFICATION_DETAILS: Record<string, ClassificationDetails> = {
+  Book: {
+    icon: bookIcon,
+    slug: "book",
+  },
   Best: {
     icon: bestMoveIcon,
     slug: "best",

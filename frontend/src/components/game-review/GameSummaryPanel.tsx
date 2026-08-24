@@ -2,6 +2,7 @@ import type { GameReviewResponse } from "../../types/analysis";
 import { getClassificationDetails } from "../../utils/moveClassifications";
 
 const CLASSIFICATIONS = [
+  "Book",
   "Best",
   "Excellent",
   "Good",
