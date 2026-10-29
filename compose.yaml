@@ -26,7 +26,7 @@ services:
     image: postgres:18-alpine
     environment:
       POSTGRES_USER: chess_coach
-      POSTGRES_PASSWORD: chess_coach_dev
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: chess_coach
 
     ports:

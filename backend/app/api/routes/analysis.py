@@ -8,10 +8,6 @@ from app.models.review import Review
 
 router = APIRouter()
 
-@router.post("/analyze", response_model=AnalysisResponse)
-def analyze_position(analysis_request: AnalysisRequest):
-    return analyze_fen(analysis_request.fen, analysis_request.depth)
-
 @router.get("/reviews/{review_id}", response_model=StoredReviewResponse)
 def get_review(review_id: str, db: Session = Depends(get_db)):
     review = db.get(Review, review_id)
