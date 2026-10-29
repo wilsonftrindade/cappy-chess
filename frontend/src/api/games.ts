@@ -1,6 +1,6 @@
 import type { ParsedGameResponse } from "../types/game";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export async function parseGame(pgn: string, signal: AbortSignal): Promise<ParsedGameResponse> {
     const response = await fetch(`${API_BASE_URL}/api/games/parse`, {

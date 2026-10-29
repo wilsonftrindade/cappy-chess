@@ -1,8 +1,7 @@
 import type { ReviewJobCreatedResponse, ReviewJob, StoredReviewResponse } from "../types/reviewJob";
 import type { GameSource } from "../types/analysis";
 
-
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export async function createReviewJob(pgn: string, depth: number, source: GameSource, external_id: string | null, signal?: AbortSignal): Promise<ReviewJobCreatedResponse> {
     const response = await fetch(`${API_BASE_URL}/api/analysis/review-jobs`, {
