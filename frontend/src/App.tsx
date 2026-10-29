@@ -34,8 +34,7 @@ function App() {
   useEffect(() => {
     const fetchBackendData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/health')
-
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/health`)
         if (!response.ok) {
           throw new Error('Network response was not ok')
         }
