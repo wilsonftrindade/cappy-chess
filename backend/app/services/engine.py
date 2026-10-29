@@ -12,9 +12,13 @@ from .classification import (
     compute_move_accuracy
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 load_dotenv()
 
-STOCKFISH_PATH = os.getenv("STOCKFISH_PATH", "stockfish")
+STOCKFISH_PATH = os.getenv("STOCKFISH_PATH")
 
 def analyze_fen(fen: str, depth: int) -> AnalysisResponse:
 
@@ -127,13 +131,19 @@ def build_move_review(move_uci: str, move_san: str, analysis_before: AnalysisRes
         move_accuracy=move_accuracy
     )
 
-
 def start_stockfish():
     try:
-        engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
-        return engine
-    except FileNotFoundError:
-        raise HTTPException(status_code=500, detail="Stockfish engine not found")
+        return chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
+
+    except FileNotFoundError as e:
+        logger.exception(
+            "Stockfish not found. Configured path: %r",
+            STOCKFISH_PATH
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Stockfish engine not found"
+        ) from e
     
     
 def create_and_validate_board(fen: str) -> chess.Board:

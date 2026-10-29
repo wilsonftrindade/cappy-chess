@@ -43,6 +43,33 @@ services:
       timeout: 3s
       retries: 5
 
+  backend:
+    build: ./backend
+    image: chess-backend:latest
+    ports:
+      - "8000:8000"
+
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+
+  rq-worker:
+    build: ./backend
+    image: chess-backend:latest
+
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      LICHESS_API_TOKEN: ${LICHESS_API_TOKEN}
+
+    command: ["rq", "worker", "--url", "redis://redis:6379/0", "game-reviews"]
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    
 volumes:
   redis-data:
   postgres_data:
