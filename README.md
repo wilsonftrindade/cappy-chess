@@ -6,7 +6,7 @@ The application combines engine evaluations, move classifications, accuracy metr
 
 **[Live Application](https://capivara-chess.vercel.app)**
 
-![Cappy Chess Game Review](docs/screenshots/game-review.png)
+![Cappy Chess Game Review](docs/game-review.png)
 
 ## Features
 
@@ -40,7 +40,7 @@ The review interface allows players to explore completed analyses through:
 - **Move-by-Move Feedback:** Display move classifications, evaluations, accuracy scores, and recommended alternatives.
 - **Game Summary:** Compare both players' overall accuracy and move classification statistics.
 
-![Cappy Chess Game Summary](docs/screenshots/game-summary.png)
+![Cappy Chess Game Summary](docs/game-summary.png)
 
 ### Asynchronous Processing
 
