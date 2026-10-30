@@ -40,7 +40,7 @@ def is_book_move(client: httpx.Client, fen_before: str, move_uci: str) -> bool:
         move_games = move_entry.get("white", 0) + move_entry.get("draws", 0) + move_entry.get("black", 0)
         break
 
-  move_frequency = move_games / position_games
+  move_frequency = move_games / position_games if position_games > 0 else 0
 
   return (move_frequency >= MIN_BOOK_FREQUENCY and move_games >= MIN_BOOK_GAMES)    
 
