@@ -14,23 +14,23 @@
   padding: 26px;
   border: 1px solid var(--border-strong);
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.98);
   box-shadow: var(--shadow-large);
   text-align: center;
 }
 
 .analysis-overlay-card::before {
-  display: grid;
+  display: block;
   width: 45px;
   height: 45px;
   margin: 0 auto 13px;
-  place-items: center;
   border-radius: 11px;
-  background: var(--accent);
-  color: white;
-  content: "♞";
-  font-size: 27px;
-  line-height: 1;
+
+  content: "";
+  background-image: url("../../../public/cappychess.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+
   box-shadow: var(--shadow-small);
 }
 

@@ -50,10 +50,12 @@ function AnalysisPreviewPage({
 
       <aside className="review-sidebar">
         <header className="review-sidebar-header">
-          <span className="review-brand-mark" aria-hidden="true">♞</span>
+          <span className="review-brand-mark" aria-hidden="true">
+            <img src="../../../public/cappychess.png" alt="Cappy Chess Logo" />
+          </span>
 
           <div>
-            <h2>Chess Coach</h2>
+            <h2>Cappy Chess</h2>
             <p>Building your move-by-move review.</p>
           </div>
         </header>

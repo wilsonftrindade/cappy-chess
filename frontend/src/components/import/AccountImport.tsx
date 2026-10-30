@@ -121,8 +121,8 @@ const AccountImport = ({ source, onSelectGame }: AccountImportProps) => {
         disabled={isLoading || !username.trim()}
       >
         {isLoading
-          ? "Fetching Games..."
-          : "Fetch Recent Games"}
+          ? "Importing Games..."
+          : "Import Recent Games"}
       </button>
 
       {error && (

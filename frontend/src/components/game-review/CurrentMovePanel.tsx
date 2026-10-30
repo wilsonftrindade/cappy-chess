@@ -61,7 +61,7 @@ const CurrentMovePanel = ( { move }: CurrentMovePanelProps ) => {
         </span>
       </div>
 
-      {(move.classification !== "Best") ? (
+      {(move.classification !== "Best" && move.classification !== "Book") ? (
         <div className="best-move-review">
           <div className="move-review-label move-tier--best">
             {bestMoveDetails ? (

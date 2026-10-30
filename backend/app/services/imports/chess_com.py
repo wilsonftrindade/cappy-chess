@@ -11,6 +11,8 @@ async def fetch_chess_com_games(username: str, limit: int = 20, cursor: str | No
   async with httpx.AsyncClient(
       base_url=CHESS_COM_BASE_URL, headers=CHESS_COM_HEADERS, timeout=15
   ) as client:
+
+    username = username.strip().lower()
     
     response = await client.get(f"/player/{username}/games/archives")
     response.raise_for_status()

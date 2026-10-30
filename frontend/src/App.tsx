@@ -170,16 +170,17 @@ function App() {
     <main className="app">
       <header className="app-header">
         <div className="app-brand">
-          <span className="app-brand-mark" aria-hidden="true">♞</span>
+          <img className="app-brand-mark" aria-hidden="true" src="../public/cappychess.png" alt="Cappy Chess Logo" />
 
           <div className="app-brand-copy">
-            <h1>Chess Coach</h1>
+            <h1>Cappy Chess</h1>
+            <p>Review your blunders and stop being a capybara!</p>
           </div>
         </div>
 
-        <p className={`app-status app-status--${backendStatus === "error" ? "error" : backendStatus === "checking..." ? "checking" : "ready"}`}>
+        {/* <p className={`app-status app-status--${backendStatus === "error" ? "error" : backendStatus === "checking..." ? "checking" : "ready"}`}>
           Backend: {backendStatus}
-        </p>
+        </p> */}
       </header>
 
       <AnalysisOverlay

@@ -22,7 +22,7 @@ const GameImport = ( { onSelectImportedGame, onPgnChange, onReviewPgn, isReviewL
     <div className="game-import">
       <header className="game-import__header">
         <h2>Review your game</h2>
-        <p>Choose a source and find the moments that shaped the result.</p>
+        <p>Choose a source and review your games with Stockfish-powered analysis.</p>
       </header>
 
       <div className="game-import__sources">
