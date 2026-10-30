@@ -170,7 +170,7 @@ function App() {
     <main className="app">
       <header className="app-header">
         <div className="app-brand">
-          <img className="app-brand-mark" aria-hidden="true" src="../public/cappychess.png" alt="Cappy Chess Logo" />
+          <img className="app-brand-mark" aria-hidden="true" src="/cappychess.png" alt="Cappy Chess Logo" />
 
           <div className="app-brand-copy">
             <h1>Cappy Chess</h1>

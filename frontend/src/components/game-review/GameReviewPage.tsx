@@ -83,7 +83,7 @@ const GameReviewPage = ({ gameReview }: GameReviewProps) => {
 
       <aside className="review-sidebar">
         <header className="review-sidebar-header">
-          <img className="review-brand-mark" aria-hidden="true" src="../../public/cappychess.png" alt="Cappy Chess Logo" />
+          <img className="review-brand-mark" aria-hidden="true" src="/cappychess.png" alt="Cappy Chess Logo" />
 
           <div>
             <h2>Game Review</h2>
