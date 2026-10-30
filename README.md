@@ -320,15 +320,4 @@ Open **http://localhost:5173** to access Cappy Chess.
 - **Analysis Refinement:** Improve classification thresholds, accuracy calculations, and mate-scenario handling.
 - **Additional Classifications:** Implement specialized categories such as Brilliant, Great, and Miss.
 - **Deeper Insights:** Expand game statistics and identify recurring patterns in player performance.
-- **User Experience:** Improve mobile responsiveness and analysis visualizations.
-
----
-
-## Author
-
-**Wilson Ferreira Trindade Neto**
-
-Computer Science & Economics, Northwestern University
-
-[GitHub](https://github.com/wilsonftrindade) | [Live Application](https://capivara-chess.vercel.app)
-````
+- **User Experience:** Improve mobile responsiveness and analysis visualizations
