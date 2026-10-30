@@ -179,10 +179,12 @@ Cappy Chess uses an exponential decay function to transform probability loss int
 
 ```math
 A_{\text{move}} =
-\operatorname{clamp}
-\left(
-103.16681e^{-0.04354415(100 \cdot WPL)}
-- 2.16692,\ 0,\ 100
+\min\left(
+100,\ 
+\max\left(
+0,\ 
+103.16681 e^{-0.04354415(100 \cdot WPL)} - 2.16692
+\right)
 \right)
 ```
 
