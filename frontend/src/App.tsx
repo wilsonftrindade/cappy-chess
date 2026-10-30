@@ -178,9 +178,9 @@ function App() {
           </div>
         </div>
 
-        {/* <p className={`app-status app-status--${backendStatus === "error" ? "error" : backendStatus === "checking..." ? "checking" : "ready"}`}>
+        <p className={`app-status app-status--${backendStatus === "error" ? "error" : backendStatus === "checking..." ? "checking" : "ready"}`}>
           Backend: {backendStatus}
-        </p> */}
+        </p>
       </header>
 
       <AnalysisOverlay
